@@ -3,7 +3,8 @@ const app = express()
 const dotenv = require('dotenv')
 dotenv.config()
 const authRoute = require('./routes/authRoute')
-const staticRoute=require('./routes/staticRoutes')
+// const staticRoute=require('./routes/staticRoutes')
+const jobRoute=require('./routes/jobRoutes')
 
 
 const connectDb = require('./config/db')
@@ -12,8 +13,9 @@ connectDb()
 const PORT = process.env.PORT;
 
 app.use(express.json());
-app.use('/api', staticRoute)
+// app.use('/api', staticRoute)
 app.use('/api/auth', authRoute)
+app.use('/api/job', jobRoute)
 
 app.get('/', (req, res) => {
     res.send("Hey this is new project")

@@ -88,4 +88,19 @@ async function loginUser(req, res) {
     }
 }
 
-module.exports = { registerUser, loginUser };
+async function profilePage(req, res) {
+    try {
+        return res.status(200).json({
+            message: "Protected route accessed",
+            user: req.user
+        })
+    }
+    catch (err) {
+        return res.status(500).json({
+            message: err.message
+        })
+    }
+}
+
+
+module.exports = { registerUser, loginUser,profilePage };
