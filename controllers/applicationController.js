@@ -43,6 +43,64 @@ async function ApplyForJob(req, res) {
     }
 }
 
-module.exports={
+async function getAllAppliedJobs(req, res) {
+    try {
+        const { userId } = req.user;
+        const applications = await applicationSchema.find({ applicant: userId }).populate("job");
+        // In application model we store the reference of job and applicant so when we try to fetch the application data it will fetch the ids instead of actaul content so to avoid it we used the populate() 
+        if (applications.length == 0) {
+            return res.status(200).json({
+                success: true,
+                applications: [],
+                message: "No data found"
+            })
+        }
+        return res.status(200).json({
+            "success": true,
+            applications
+        })
+    }
+    catch (err) {
+        return res.status(500).json({
+            success: false,
+            message: err.message
+        })
+    }
+}
+
+async function getAllCandidatesAppliedForJob(req, res) {
+    try {
+        const jobId = req.params.id;
+        if (!jobId) {
+            return res.status(400).json({
+                success: false
+            })
+        }
+        const applicants = await applicationSchema
+            .find({ job: jobId })
+            .populate("applicant", "fullname email occupation");
+        if (applicants.length == 0) {
+            return res.status(200).json({
+                success: true,
+                applicants: [],
+                message: "No applicants yet"
+            })
+        }
+        return res.status(200).json({
+            success: true,
+            applicants
+        })
+    }
+    catch (err) {
+        return res.status(500).json({
+            success: false,
+            message: err.message
+        })
+    }
+}
+
+module.exports = {
     ApplyForJob,
+    getAllAppliedJobs,
+    getAllCandidatesAppliedForJob
 }
