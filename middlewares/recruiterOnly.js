@@ -3,8 +3,8 @@ async function recruiterOnly(req, res, next) {
     try {
         const userRole = req.user.role;
         if (userRole !== "recruiter") {
-            return res.status(401).json({
-                message: "Not have permission to post"
+            return res.status(403).json({
+                message: "Not have permission "
             })
         }
         next()
