@@ -11,4 +11,5 @@ router.get('/:id', authMiddleware, showJobPost)
 router.put('/:id', authMiddleware, recruiterOnly, updatePost)
 router.delete('/:id', authMiddleware, recruiterOnly, deletePost)
 
+
 module.exports = router;
