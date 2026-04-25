@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Job Details - NextHire</title>
+    <link rel="stylesheet" href="/stylesheets/jobdetails.css">
+</head>
+
+<body>
+    <div class="details-container">
+        <div class="job-card">
+            <h1>
+                <%= jobpost.title %>
+            </h1>
+
+            <div class="job-meta">
+                <span class="meta-item">
+                    <%= jobpost.company %>
+                </span>
+                <span class="meta-item">
+                    <%= jobpost.location %>
+                </span>
+            </div>
+
+            <div class="salary-box">
+                Salary: ₹<%= jobpost.salary %>
+            </div>
+
+            <div class="description-box">
+                <p><strong>Description:</strong>
+                    <%= jobpost.description %>
+                </p>
+            </div>
+
+            <form action="/applications/apply/<%= jobpost._id %>" method="post">
+                <button class="apply-btn">Apply Now</button>
+            </form>
+        </div>
+    </div>
+</body>
+
+</html>

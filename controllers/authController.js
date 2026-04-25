@@ -10,8 +10,14 @@ async function registerUser(req, res) {
 
         const userExistOrNot = await userSchemaDb.findOne({ email })
 
+        // if (userExistOrNot) {
+        //     return res.status(400).json({
+        //         message: "The user already exist"
+        //     })
+        // }
+
         if (userExistOrNot) {
-            return res.status(400).json({
+            return res.status(400).render("register", {
                 message: "The user already exist"
             })
         }
@@ -27,14 +33,12 @@ async function registerUser(req, res) {
             experience
         })
 
-        return res.status(201).json({
-            message: "The user registered successfully"
-        })
+        return res.status(201).redirect("/login");
 
     }
     catch (err) {
-        return res.status(500).json({
-            message: err.message
+        return res.status(500).render("register", {
+            message: "Something went wrong"
         })
     }
 }
@@ -44,7 +48,7 @@ async function loginUser(req, res) {
         const { email, password } = req.body;
 
         if (!email || !password) {
-            return res.status(404).json({
+            return res.status(404).render("login", {
                 message: "The data not found"
             })
         }
@@ -52,16 +56,16 @@ async function loginUser(req, res) {
         const checkUserExistOrNot = await userSchemaDb.findOne({ email })
 
         if (!checkUserExistOrNot) {
-            return res.status(400).json({
-                message: "User not found"
+            return res.status(400).render("login", {
+                message: "The user not found"
             })
         }
 
         const comaparePass = await bcrypt.compare(password, checkUserExistOrNot.password)
 
         if (!comaparePass) {
-            return res.status(400).json({
-                message: "Invalid user"
+            return res.status(400).render("login", {
+                message: "The password is incorrect"
             })
         }
 
@@ -75,14 +79,13 @@ async function loginUser(req, res) {
             }
         )
 
-        return res.status(200).json({
-            message: "The user is logged in",
-            token
-        })
+        res.cookie('token', token);
+
+        return res.status(200).redirect("/jobs/alljobs");
 
     }
     catch (err) {
-        return res.status(500).json({
+        return res.status(500).render("login", {
             message: err.message
         })
     }
@@ -102,5 +105,12 @@ async function profilePage(req, res) {
     }
 }
 
+async function registerPage(req, res) {
+    return res.render('register');
+}
 
-module.exports = { registerUser, loginUser,profilePage };
+async function loginPage(req, res) {
+    return res.render('login');
+}
+
+module.exports = { registerUser, loginUser, profilePage, registerPage, loginPage };

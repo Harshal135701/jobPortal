@@ -1,6 +1,8 @@
 const express = require('express')
 const app = express()
+const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv')
+const path = require('path')
 dotenv.config()
 const authRoute = require('./routes/authRoute')
 // const staticRoute=require('./routes/staticRoutes')
@@ -13,16 +15,18 @@ connectDb()
 
 const PORT = process.env.PORT;
 
+app.set("view engine", "ejs");
+app.set("views", path.join(__dirname, "views"));
+app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "public")));
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
-// app.use('/api', staticRoute)
-app.use('/api/auth', authRoute)
-app.use('/api/job', jobRoute)
-app.use('/api', applicationRoute)
+app.use(cookieParser());
 
-app.get('/', (req, res) => {
-    res.send("Hey this is new project")
-})
 
+app.use('/', authRoute)
+app.use('/jobs', jobRoute)
+app.use('/applications', applicationRoute)
 
 app.listen(PORT, () => {
     console.log(`The app is listening on port${PORT}`)

@@ -1,0 +1,90 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8fafc;
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+.details-container {
+    max-width: 900px;
+    margin: auto;
+}
+
+.job-card {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 18px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e5e7eb;
+}
+
+.job-card h1 {
+    font-size: 2rem;
+    color: #1e3a8a;
+    margin-bottom: 1rem;
+}
+
+.job-meta {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.meta-item {
+    background-color: #eff6ff;
+    color: #2563eb;
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: 0.95rem;
+    font-weight: 600;
+}
+
+.salary-box {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background-color: #f0fdf4;
+    border-left: 4px solid #22c55e;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    color: #166534;
+}
+
+.description-box {
+    margin-top: 1.5rem;
+    padding: 1.2rem;
+    background-color: #f9fafb;
+    border-radius: 10px;
+    line-height: 1.6;
+    color: #374151;
+}
+
+.apply-btn {
+    margin-top: 2rem;
+    padding: 14px 28px;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: 0.2s ease;
+}
+
+.apply-btn:hover {
+    transform: translateY(-2px);
+    opacity: 0.95;
+}
+
+.message {
+    color: red;
+    margin-bottom: 1rem;
+}

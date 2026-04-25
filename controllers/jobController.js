@@ -37,18 +37,21 @@ async function getAlljob(req, res) {
     try {
         const jobs = await jobSchema.find({});
         if (jobs.length === 0) {
-            return res.status(200).json({
-                message: "Data not found"
+            return res.status(200).render("alljobs", {
+                jobs: [],
+                message: "job not found"
             })
         }
-        return res.status(200).json({
+
+        return res.status(200).render("alljobs", {
+            jobs,
             count: jobs.length,
-            jobs
         })
     }
     catch (err) {
-        return res.status(500).json({
-            message: err.message
+        return res.status(500).render("alljobs", {
+            jobs: [],
+            message: "Something went wrong while loading jobs"
         })
     }
 }
@@ -58,19 +61,14 @@ async function showJobPost(req, res) {
         const jobId = req.params.id;
         const jobPost = await jobSchema.findById(jobId);
         if (!jobPost) {
-            return res.status(404).json({
-                message: "The job post not found"
-            })
+           return res.redirect('/jobs/alljobs')
         }
-        return res.status(200).json({
-            message: "Job fetched successfully",
-            jobPost
+        return res.status(200).render("jobdetails", {
+            jobpost: jobPost
         })
     }
     catch (err) {
-        return res.status(500).json({
-            message: err.message
-        })
+         return res.redirect('/jobs/alljobs')
     }
 }
 

@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - HireBridge</title>
+    <link rel="stylesheet" href="/stylesheets/register.css">
+</head>
+<body>
+    <div class="container">
+        <div class="left-panel">
+            <h1 class="logo">NextHire</h1>
+            <img src="/images/loginPage.webp" alt="Register Illustration" class="register-image">
+        </div>
+
+        <div class="right-panel">
+            <div class="register-box">
+                <h2>Create your account</h2>
+
+                <% if (typeof message !== "undefined") { %>
+                    <p class="message"><%= message %></p>
+                <% } %>
+
+                <form action="/register" method="post">
+                    <label>Full Name</label>
+                    <input type="text" name="fullname" placeholder="Enter full name" required>
+
+                    <label>Email</label>
+                    <input type="email" name="email" placeholder="Enter email" required>
+
+                    <label>Password</label>
+                    <input type="password" name="password" placeholder="Enter password" required>
+
+                    <label for="role">Choose Role</label>
+                    <select name="role" id="role" required>
+                        <option value="candidate">Candidate</option>
+                        <option value="recruiter">Recruiter</option>
+                    </select>
+
+                    <label>Occupation</label>
+                    <input type="text" name="occupation" placeholder="Enter occupation" required>
+
+                    <label>Experience (years)</label>
+                    <input type="number" name="experience" placeholder="Enter experience" required>
+
+                    <button type="submit">Register</button>
+                </form>
+
+                <p class="login-link">
+                    Already have an account?
+                    <a href="/login">Login here</a>
+                </p>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
