@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JobHunt | Home</title>
+    <link rel="stylesheet" href="/stylesheets/home.css">
+    <link rel="stylesheet" href="/stylesheets/navbar.css">
+</head>
+<body>
+    <!-- <nav class="navbar"> -->
+        <%- include("partials/navbar")%>
+    <!-- </nav> -->
+
+    <section class="hero">
+        <p class="tagline">No. 1 Job Hunt Website</p>
+        <h1>Search, Apply &<br>Get Your <span>Dream Job</span></h1>
+        <p class="subtitle">
+            Welcome <%= user.fullname || 'Candidate' %>! Explore exciting opportunities,
+            apply to top companies, and track your career journey.
+        </p>
+
+        <form action="/jobs/alljobs" method="GET" class="search-bar">
+            <input type="text" name="keyword" placeholder="Find your dream jobs">
+            <button type="submit">Search</button>
+        </form>
+    </section>
+
+    <section class="categories">
+        <a href="/jobs/alljobs?role=Frontend">Frontend Developer</a>
+        <a href="/jobs/alljobs?role=Backend">Backend Developer</a>
+        <a href="/jobs/alljobs?role=Data">Data Engineer</a>
+        <a href="/jobs/alljobs?role=FullStack">Full Stack</a>
+    </section>
+
+    <section class="quick-actions">
+        <div class="card">
+            <h3>Browse Jobs</h3>
+            <p>Explore all available openings.</p>
+            <a href="/jobs/alljobs">View Jobs</a>
+        </div>
+
+        <div class="card">
+            <h3>My Applications</h3>
+            <p>Track the jobs you have applied for.</p>
+            <a href="/applications/my">Check Status</a>
+        </div>
+
+        <div class="card">
+            <h3>Profile</h3>
+            <p>Manage your account details.</p>
+            <a href="/profile">Open Profile</a>
+        </div>
+    </section>
+</body>
+</html>

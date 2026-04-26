@@ -26,6 +26,10 @@ const userSchema = new mongoose.Schema({
     experience: {
         type: Number,
         default: 0
+    },
+    profilepic:{
+        type:String,
+        default:'/images/default.webp'
     }
 
 }, { timestamps: true })

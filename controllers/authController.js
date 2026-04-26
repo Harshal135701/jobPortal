@@ -21,6 +21,11 @@ async function registerUser(req, res) {
                 message: "The user already exist"
             })
         }
+       
+        let file='/images/default.webp';
+        if(req.file){
+            file='/uploads/'+req.file.filename;
+        }
 
         const hashedPass = await bcrypt.hash(password, saltRounds);
 
@@ -30,7 +35,8 @@ async function registerUser(req, res) {
             password: hashedPass,
             role,
             occupation,
-            experience
+            experience,
+            profilepic:file
         })
 
         return res.status(201).redirect("/login");
@@ -81,7 +87,7 @@ async function loginUser(req, res) {
 
         res.cookie('token', token);
 
-        return res.status(200).redirect("/jobs/alljobs");
+        return res.status(200).redirect("/home");
 
     }
     catch (err) {
@@ -93,13 +99,13 @@ async function loginUser(req, res) {
 
 async function profilePage(req, res) {
     try {
-        return res.status(200).json({
-            message: "Protected route accessed",
+        return res.status(200).render("home", {
             user: req.user
         })
     }
     catch (err) {
-        return res.status(500).json({
+        return res.status(500).render("home", {
+            user: req.user,
             message: err.message
         })
     }
@@ -113,4 +119,14 @@ async function loginPage(req, res) {
     return res.render('login');
 }
 
-module.exports = { registerUser, loginUser, profilePage, registerPage, loginPage };
+async function logout(req, res) {
+    try {
+        res.clearCookie("token");
+        return res.redirect('/login')
+    }
+    catch (err) {
+        return res.redirect('/login')
+    }
+}
+
+module.exports = { registerUser, loginUser, profilePage, registerPage, loginPage ,logout};

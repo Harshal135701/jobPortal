@@ -6,11 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>All Jobs - NextHire</title>
     <link rel="stylesheet" href="/stylesheets/alljobs.css">
+    <link rel="stylesheet" href="/stylesheets/navbar.css">
 </head>
 
 <body>
+    <%- include("partials/navbar")%>
     <div class="page-container">
-        <h1 class="page-title">Available Jobs</h1>
+        <h1 class="page-title">Available <span>Jobs</span></h1>
 
         <div class="jobs-container">
             <% if (jobs.length===0) { %>
