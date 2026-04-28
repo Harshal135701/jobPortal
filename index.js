@@ -8,6 +8,7 @@ const authRoute = require('./routes/authRoute')
 // const staticRoute=require('./routes/staticRoutes')
 const jobRoute = require('./routes/jobRoutes')
 const applicationRoute = require('./routes/applicationRoutes')
+const recruiterRoute = require('./routes/recruiterRoutes')
 
 
 const connectDb = require('./config/db')
@@ -27,6 +28,7 @@ app.use(cookieParser());
 app.use('/', authRoute)
 app.use('/jobs', jobRoute)
 app.use('/applications', applicationRoute)
+app.use('/recruiter', recruiterRoute)
 
 app.listen(PORT, () => {
     console.log(`The app is listening on port${PORT}`)

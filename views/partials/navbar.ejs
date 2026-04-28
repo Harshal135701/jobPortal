@@ -4,8 +4,14 @@
     <div class="nav-right">
         <div class="nav-links">
             <a href="/home">Home</a>
-            <a href="/jobs/alljobs">Jobs</a>
-            <a href="/applications/my">Applications</a>
+
+            <% if (user.role==='recruiter' ) { %>
+                <a href="/recruiter/create">Create Job</a>
+                <a href="/recruiter/myjobs">Published Jobs</a>
+                <% } else { %>
+                    <a href="/jobs/alljobs">Jobs</a>
+                    <a href="/applications/my">Applications</a>
+                    <% } %>
         </div>
 
         <div class="user-section">

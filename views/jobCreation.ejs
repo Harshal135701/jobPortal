@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Job Post</title>
+    <link rel="stylesheet" href="/stylesheets/navbar.css">
+    <link rel="stylesheet" href="/stylesheets/createJob.css">
+</head>
+<body>
+
+    <%- include("partials/navbar") %>
+
+    <div class="form-container">
+        <h2>Create a Job Post</h2>
+
+        <form action="/recruiter/create" method="POST">
+            <label>Title</label>
+            <input type="text" name="title" required>
+
+            <label>Description</label>
+            <textarea name="description" rows="4" required></textarea>
+
+            <label>Company</label>
+            <input type="text" name="company" required>
+
+            <label>Location</label>
+            <input type="text" name="location" required>
+
+            <label>Salary</label>
+            <input type="number" name="salary" required>
+
+            <label>Experience Level (Years)</label>
+            <input type="number" name="experienceLevel" required>
+
+            <label>Job Type</label>
+            <select name="jobType" required>
+                <option value="">Select Job Type</option>
+                <option value="Full-time">Full-time</option>
+                <option value="Part-time">Part-time</option>
+                <option value="Internship">Internship</option>
+                <option value="Remote">Remote</option>
+            </select>
+
+            <button type="submit">Create Job</button>
+        </form>
+    </div>
+
+</body>
+</html>

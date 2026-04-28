@@ -1,0 +1,58 @@
+body {
+    font-family: Arial, sans-serif;
+    background: #f8f8f8;
+}
+
+.applicants-container {
+    width: 90%;
+    margin: 30px auto;
+}
+
+h2 {
+    margin-bottom: 20px;
+}
+
+.applicant-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 20px;
+}
+
+.applicant-card {
+    background: white;
+    padding: 20px;
+    border-radius: 14px;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+}
+
+.applicant-card h3 {
+    color: #6d28d9;
+    margin-bottom: 10px;
+}
+
+.applicant-card p {
+    margin: 8px 0;
+}
+
+form {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+select {
+    padding: 8px;
+    border-radius: 8px;
+    border: 1px solid #ddd;
+}
+
+button {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 8px;
+    background: #6d28d9;
+    color: white;
+    cursor: pointer;
+    font-weight: 600;
+}

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Jobs</title>
+    <link rel="stylesheet" href="/stylesheets/navbar.css">
+    <link rel="stylesheet" href="/stylesheets/myJobs.css">
+</head>
+<body>
+    <%- include("partials/navbar") %>
+
+    <div class="jobs-container">
+        <h2>My Posted Jobs</h2>
+
+        <% if (typeof message !== "undefined") { %>
+            <p class="message"><%= message %></p>
+        <% } %>
+
+        <% if (jobs.length === 0) { %>
+            <p>No jobs created yet</p>
+        <% } else { %>
+            <div class="job-grid">
+                <% jobs.forEach(function(job) { %>
+                    <div class="job-card">
+                        <h3><%= job.title %></h3>
+
+                        <p><strong>Salary:</strong> ₹<%= job.salary %></p>
+                        <p><strong>Location:</strong> <%= job.location %></p>
+                        <p><strong>Job Type:</strong> <%= job.jobType %></p>
+                        <p><strong>Experience:</strong> <%= job.experienceLevel %> years</p>
+
+                        <div class="card-buttons">
+                            <a href="/recruiter/update/<%= job._id %>" class="btn">Update</a>
+                            <a href="/recruiter/delete/<%= job._id %>" class="btn">Delete</a>
+                            <a href="/recruiter/<%= job._id %>/applications" class="btn">
+                                Check Applicants
+                            </a>
+                        </div>
+                    </div>
+                <% }) %>
+            </div>
+        <% } %>
+    </div>
+
+</body>
+</html>
