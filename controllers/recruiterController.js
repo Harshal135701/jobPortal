@@ -1,6 +1,6 @@
 const jobSchema = require('../models/job')
 const userSchema = require('../models/user')
-const applicationSchema=require('../models/application')
+const applicationSchema = require('../models/application')
 
 async function JobPostCreation(req, res) {
     try {
@@ -69,42 +69,63 @@ async function getPageForJobCreation(req, res) {
 async function updatePost(req, res) {
     try {
         const jobId = req.params.id;
-        const jobIs = await jobSchema.findById(jobId);
-        if (!jobIs) {
-            return res.status(404).json({
-                success: false,
-                message: "job not found"
-            })
-        }
-        const { userId } = req.user;
-        const userIs = await userSchema.findById(userId);
-        if (!userIs) {
-            return res.status(404).json({
-                success: false,
-                message: "User not found"
-            })
-        }
-        if (userId !== jobIs.createdBy.toString()) {
-            return res.status(403).json({
-                success: false,
-                message: "Not have a permission to update post"
-            })
-        }
-        const updatedPost = await jobSchema.findByIdAndUpdate(
+
+        const {
+            title,
+            description,
+            company,
+            location,
+            salary,
+            jobType,
+            experienceLevel
+        } = req.body;
+
+        const updatedJob = await jobSchema.findByIdAndUpdate(
             jobId,
-            req.body,
+            {
+                title,
+                description,
+                company,
+                location,
+                salary,
+                jobType,
+                experienceLevel
+            },
             { new: true }
         );
-        return res.status(200).json({
+
+        if (!updatedJob) {
+            return res.status(404).json({
+                success: false,
+                message: "Job not found"
+            });
+        }
+
+        res.status(200).json({
             success: true,
-            message: "The post is updated",
-            job: updatePost
-        })
+            message: "Job updated successfully",
+            updatedJob
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: "Server error"
+        });
+    }
+}
+
+async function updatePostGETpage(req, res) {
+    try {
+        const jobId = req.params.id;
+        const jobPost = await jobSchema.findById(jobId)
+        return res.status(200).render("update", {
+            job: jobPost
+        });
     }
     catch (err) {
-        return res.status(500).json({
-            message: err.message,
-            success: false
+        return res.status(500).render("update", {
+            message: err.message
         })
     }
 }
@@ -119,20 +140,7 @@ async function deletePost(req, res) {
                 message: "job not found"
             })
         }
-        const { userId } = req.user;
-        const userIs = await userSchema.findById(userId);
-        if (!userIs) {
-            return res.status(404).json({
-                success: false,
-                message: "User not found"
-            })
-        }
-        if (userId !== jobIs.createdBy.toString()) {
-            return res.status(403).json({
-                success: false,
-                message: "Not have a permission to delete post"
-            })
-        }
+        
         const deletedPost = await jobSchema.findByIdAndDelete(
             jobId
         )
@@ -156,7 +164,7 @@ async function getAllCandidatesAppliedForJob(req, res) {
         if (!jobId) {
             return res.status(400).render("getAllCandidate", {
                 message: "Job post not found",
-                applicants:[]
+                applicants: []
             })
         }
         const applicants = await applicationSchema
@@ -165,17 +173,17 @@ async function getAllCandidatesAppliedForJob(req, res) {
             // Selct use to select only things we want to show on api
             .populate("applicant", "fullname email occupation -_id")
         if (applicants.length == 0) {
-            return res.status(200).render("getAllCandidate",{
-                applicants:[],
-                 message: "No applicants yet"
+            return res.status(200).render("getAllCandidate", {
+                applicants: [],
+                message: "No applicants yet"
             })
         }
-        return res.status(200).render("getAllCandidate",{
+        return res.status(200).render("getAllCandidate", {
             applicants
         })
     }
     catch (err) {
-         return res.status(500).render("getAllCandidate", {
+        return res.status(500).render("getAllCandidate", {
             applicants: [],
             message: err.message
         });
@@ -226,5 +234,5 @@ module.exports = {
     JobPostCreation, updatePost, deletePost,
     getAllCandidatesAppliedForJob,
     changeApplicationStatus,
-    getAllJobs, getPageForJobCreation
+    getAllJobs, getPageForJobCreation, updatePostGETpage
 }

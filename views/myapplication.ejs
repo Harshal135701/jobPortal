@@ -8,32 +8,54 @@
     <link rel="stylesheet" href="/stylesheets/myapplication.css">
     <link rel="stylesheet" href="/stylesheets/navbar.css">
 </head>
+
 <body>
-     <%- include("partials/navbar")%>
-    <div class="container">
-       
-        <h1>My <span style="color:#6d28d9;">Applications</span></h1>
+    <%- include("partials/navbar")%>
+        <div class="container">
 
-        <% if (typeof message !== 'undefined') { %>
-            <p class="message"><%= message %></p>
-        <% } %>
+            <h1>My <span style="color:#6d28d9;">Applications</span></h1>
 
-        <% if (applications.length === 0) { %>
-            <p class="empty">No applications yet</p>
-        <% } else { %>
-            <div class="applications-grid">
-                <% applications.forEach(application => { %>
-                    <div class="application-card">
-                        <h2><%= application.job.title %></h2>
-                        <p><strong>Company:</strong> <%= application.job.company %></p>
-                        <p><strong>Location:</strong> <%= application.job.location %></p>
-                        <p><strong>Salary:</strong> ₹<%= application.job.salary %></p>
-                        <p class="status"><strong>Status:</strong> <%= application.status %></p>
-                    </div>
-                <% }) %>
-            </div>
-        <% } %>
-    </div>
+            <% if (typeof message !=='undefined' ) { %>
+                <p class="message">
+                    <%= message %>
+                </p>
+                <% } %>
+
+                    <% if (applications.length===0) { %>
+                        <p class="empty">No applications yet</p>
+                        <% } else { %>
+                            <div class="applications-grid">
+                                <% applications.forEach(application=> { %>
+                                    <div class="application-card">
+
+                                        <% if (application.job) { %>
+                                            <h2>
+                                                <%= application.job.title %>
+                                            </h2>
+                                            <p><strong>Company:</strong>
+                                                <%= application.job.company %>
+                                            </p>
+                                            <p><strong>Location:</strong>
+                                                <%= application.job.location %>
+                                            </p>
+                                            <p><strong>Salary:</strong> ₹<%= application.job.salary %>
+                                            </p>
+                                            <p class="status"><strong>Status:</strong>
+                                                <%= application.status %>
+                                            </p>
+                                            <% } else { %>
+                                                <h2>Job No Longer Available</h2>
+                                                <p><strong>Status:</strong> This job was deleted by recruiter</p>
+                                                <p class="status"><strong>Application Status:</strong>
+                                                    <%= application.status %>
+                                                </p>
+                                                <% } %>
+
+                                    </div>
+                                    <% }) %>
+                            </div>
+                            <% } %>
+        </div>
 </body>
 
 </html>
