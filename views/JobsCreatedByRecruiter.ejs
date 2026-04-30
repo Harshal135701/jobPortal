@@ -45,7 +45,8 @@
 
                                         <div class="card-buttons">
                                             <a href="/recruiter/<%= job._id %>/update" class="btn">Update</a>
-                                            <a href="/recruiter/<%= job._id %>/delete" class="btn deleteBtn">Delete</a>
+                                            <a href="/recruiter/<%= job._id %>/delete" class="btn deleteBtn"
+                                                data-job-id="<%=job._id%>">Delete</a>
                                             <a href="/recruiter/<%= job._id %>/applications" class="btn">
                                                 Check Applicants
                                             </a>
@@ -56,36 +57,7 @@
                             <% } %>
         </div>
 
-        <script>
-            document.querySelectorAll(".deleteBtn").forEach(button => {
-                button.addEventListener("click", async function (e) {
-                    console.log("Delete clicked");
-                    e.preventDefault();
-
-                    const isConfirmed = confirm("Are you sure to delete the post?");
-                    if (!isConfirmed) {
-                        return;
-                    }
-
-                    try {
-                        const response = await fetch(this.href, {
-                            method: "DELETE"
-                        });
-
-                        const data = await response.json();
-
-                        alert(data.message);
-
-                        if (data.success) {
-                            window.location.href = "/recruiter/myjobs";
-                        }
-                    }
-                    catch (err) {
-                        alert("Something went wrong");
-                    }
-                });
-            });
-        </script>
+        <script src="/javascripts/deletePost.js"></script>
 </body>
 
 </html>

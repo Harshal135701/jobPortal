@@ -37,8 +37,8 @@
                                             <%= applicant.status %>
                                         </p>
 
-                                        <form action="/recruiter/<%= applicant._id %>/status" method="POST">
-                                            <select name="status" required>
+                                        <form class="updateStatusForm" data-applicant-id="<%= applicant._id %>">
+                                            <select name="status" class="status" required>
                                                 <option value="">Change Status</option>
                                                 <option value="pending">Pending</option>
                                                 <option value="accepted">Accepted</option>
@@ -53,6 +53,7 @@
                             </div>
                             <% } %>
         </div>
+        <script src="/javascripts/updateStatus.js"></script>
 </body>
 
 </html>

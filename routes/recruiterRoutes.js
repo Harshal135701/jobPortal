@@ -10,7 +10,7 @@ router.get('/create', authMiddleware, recruiterOnly, getPageForJobCreation);
 
 router.get('/myjobs', authMiddleware, recruiterOnly, getAllJobs);
 router.get("/:id/applications", authMiddleware, recruiterOnly, getAllCandidatesAppliedForJob);
-router.post("/:id/status", authMiddleware, recruiterOnly, changeApplicationStatus);
+router.patch("/:id/status", authMiddleware, recruiterOnly, changeApplicationStatus);
 
 router.get('/:id/update', authMiddleware, recruiterOnly, updatePostGETpage);
 router.put('/:id/update', authMiddleware, recruiterOnly, updatePost);
