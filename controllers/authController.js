@@ -2,6 +2,8 @@ const bcrypt = require('bcrypt');
 const saltRounds = 10;
 var jwt = require('jsonwebtoken');
 const userSchemaDb = require("../models/user");
+const jobSchema = require("../models/job")
+const applicationSchema = require('../models/application')
 const user = require('../models/user');
 
 async function registerUser(req, res) {
@@ -21,10 +23,10 @@ async function registerUser(req, res) {
                 message: "The user already exist"
             })
         }
-       
-        let file='/images/default.webp';
-        if(req.file){
-            file='/uploads/'+req.file.filename;
+
+        let file = '/images/default.webp';
+        if (req.file) {
+            file = '/uploads/' + req.file.filename;
         }
 
         const hashedPass = await bcrypt.hash(password, saltRounds);
@@ -36,7 +38,7 @@ async function registerUser(req, res) {
             role,
             occupation,
             experience,
-            profilepic:file
+            profilepic: file
         })
 
         return res.status(201).redirect("/login");
@@ -86,8 +88,12 @@ async function loginUser(req, res) {
         )
 
         res.cookie('token', token);
-
-        return res.status(200).redirect("/home");
+        if (checkUserExistOrNot.role === "candidate") {
+            return res.status(200).redirect("/home");
+        }
+        else{
+            return res.status(200).redirect("/recruiter/dashboard");
+        }
 
     }
     catch (err) {
@@ -129,4 +135,4 @@ async function logout(req, res) {
     }
 }
 
-module.exports = { registerUser, loginUser, profilePage, registerPage, loginPage ,logout};
+module.exports = { registerUser, loginUser, profilePage, registerPage, loginPage, logout };

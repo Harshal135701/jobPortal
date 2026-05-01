@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recruiter Dashboard</title>
+    <link rel="stylesheet" href="/stylesheets/navbar.css">
+    <link rel="stylesheet" href="/stylesheets/recruiterHome.css">
+</head>
+
+<body>
+
+    <%- include('partials/navbar') %>
+
+        <div class="container">
+
+            <!-- Header -->
+            <div class="header">
+                <h2>Welcome, Recruiter</h2>
+                <p>Manage your jobs and applicants</p>
+            </div>
+
+            <!-- Stats Section -->
+            <div class="stats">
+                <div class="card">
+                    <h3>Total Jobs</h3>
+                    <p>
+                        <%= jobs.length %>
+                    </p>
+                </div>
+
+                <div class="card">
+                    <h3>Total Applicants</h3>
+                    <p>
+                        <%= applicants %>
+                    </p>
+                </div>
+            </div>
+
+            <!-- Action Button -->
+            <div class="actions">
+                <a href="/recruiter/create" class="btn">+ Create New Job</a>
+            </div>
+
+            <!-- Jobs List -->
+            <div class="jobs-section">
+                <h3>Your Job Posts</h3>
+
+                <% if (jobs.length===0) { %>
+                    <p>No jobs posted yet.</p>
+                    <% } else { %>
+
+                        <table class="jobs-table">
+                            <thead>
+                                <tr>
+                                    <th>Title</th>
+                                    <th>Location</th>
+                                    <th>Applicants</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                <% jobs.forEach(function(job){ %>
+                                    <tr>
+                                        <td>
+                                            <%= job.title %>
+                                        </td>
+                                        <td>
+                                            <%= job.location || "N/A" %>
+                                        </td>
+                                        <td>
+                                            <%= job.applicationCount%>
+                                        </td>
+                                        <td>
+                                            <span class="status active">Active</span>
+                                        </td>
+                                        <td>
+                                            <a href="/recruiter/<%= job._id %>/update"
+                                                class="action-btn view">Update</a>
+                                            <a href="#" class="action-btn edit deleteBtn" data-job-id="<%= job._id %>">
+                                                Delete
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <% }) %>
+                            </tbody>
+                        </table>
+
+                        <% } %>
+            </div>
+
+        </div>
+        <script src="/javascripts/deletePost.js"></script>
+</body>
+
+</html>

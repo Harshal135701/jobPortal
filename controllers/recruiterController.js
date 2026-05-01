@@ -140,10 +140,11 @@ async function deletePost(req, res) {
                 message: "job not found"
             })
         }
-        
+
         const deletedPost = await jobSchema.findByIdAndDelete(
             jobId
         )
+        const changeStatus = await applicationSchema.updateMany({ job: jobId }, { status: 'Closed' });
         return res.status(200).json({
             success: true,
             message: "The post is deleted",
@@ -228,11 +229,49 @@ async function changeApplicationStatus(req, res) {
     }
 }
 
+async function loggedInRec(req, res) {
+    try {
+        const userId = req.user._id;
+        const jobs = await jobSchema.aggregate([
+            {
+                $match: { createdBy: userId }
+            },
+            {
+                $lookup: {
+                    from: 'applications',
+                    localField: "_id",
+                    foreignField: "job",
+                    as: "applications"
+                }
+            },
+            {
+                $addFields: {
+                    applicationCount: { $size: "$applications" }
+                }
+            }
+        ]);
+
+        const totalNoofApplications = jobs.reduce((sum, job) => sum + job.applicationCount, 0);
+
+        return res.status(200).render("recruiterHome", {
+            jobs,
+            applicants: totalNoofApplications
+        })
+    }
+    catch (err) {
+        return res.status(500).render("recruiterHome", {
+            jobs: [],
+            applicants: 0,
+            message: err.message
+        })
+    }
+}
+
 
 
 module.exports = {
     JobPostCreation, updatePost, deletePost,
     getAllCandidatesAppliedForJob,
     changeApplicationStatus,
-    getAllJobs, getPageForJobCreation, updatePostGETpage
+    getAllJobs, getPageForJobCreation, updatePostGETpage, loggedInRec
 }

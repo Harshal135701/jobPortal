@@ -1,3 +1,4 @@
+/* RESET */
 * {
     margin: 0;
     padding: 0;
@@ -5,39 +6,36 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
-    background: linear-gradient(to bottom, #f8fafc, #eef2ff);
+    font-family: "Segoe UI", sans-serif;
+    background: linear-gradient(135deg, #f9fafb, #eef2ff);
     min-height: 100vh;
-    color: #222;
+    color: #1f2937;
 }
 
-/* MAIN CONTAINER */
+/* CONTAINER */
 .container {
     max-width: 1200px;
     margin: 40px auto;
     padding: 20px;
 }
 
-/* PAGE TITLE */
+/* TITLE */
 h1 {
     text-align: center;
     margin-bottom: 40px;
-    font-size: 2.8rem;
-    color: #111827;
+    font-size: 2.5rem;
     font-weight: 700;
 }
 
-/* MESSAGE / EMPTY */
+/* MESSAGE */
 .message {
     text-align: center;
     color: #dc2626;
     margin-bottom: 20px;
-    font-size: 1rem;
 }
 
 .empty {
     text-align: center;
-    font-size: 1.2rem;
     color: #6b7280;
     margin-top: 40px;
 }
@@ -45,52 +43,108 @@ h1 {
 /* GRID */
 .applications-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-    gap: 28px;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 25px;
 }
 
 /* CARD */
 .application-card {
-    background: white;
-    padding: 26px;
-    border-radius: 18px;
-    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
-    border: 1px solid #f1f5f9;
-    transition: all 0.25s ease;
+    position: relative;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(10px);
+    border-radius: 20px;
+    padding: 24px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.06);
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+/* Gradient top border */
+.application-card::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 5px;
+    width: 100%;
+    background: linear-gradient(90deg, #6d28d9, #4f46e5);
 }
 
 .application-card:hover {
-    transform: translateY(-6px);
-    box-shadow: 0 14px 30px rgba(109, 40, 217, 0.12);
+    transform: translateY(-8px) scale(1.01);
+    box-shadow: 0 16px 40px rgba(79, 70, 229, 0.15);
 }
 
-/* CARD TITLE */
+/* TITLE */
 .application-card h2 {
-    margin-bottom: 18px;
-    color: #111827;
-    font-size: 1.7rem;
+    font-size: 1.5rem;
+    margin-bottom: 12px;
 }
 
-/* DETAILS */
+/* TEXT */
 .application-card p {
-    margin: 12px 0;
+    margin: 8px 0;
+    font-size: 0.95rem;
     color: #4b5563;
-    line-height: 1.6;
-    font-size: 1rem;
 }
 
 .application-card strong {
-    color: #1f2937;
+    color: #111827;
 }
 
 /* STATUS BADGE */
 .status {
-    margin-top: 18px;
     display: inline-block;
-    padding: 8px 14px;
+    margin-top: 15px;
+    padding: 6px 14px;
     border-radius: 999px;
-    background: #ede9fe;
-    color: #6d28d9;
-    font-weight: 700;
-    font-size: 0.95rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}
+
+/* STATUS COLORS */
+.status.pending {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status.shortlisted {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status.rejected {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.status.closed {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+/* CLOSED JOB STYLE */
+.application-card.closed {
+    opacity: 0.85;
+    border: 1px dashed #d1d5db;
+}
+
+.application-card.closed::before {
+    background: linear-gradient(90deg, #9ca3af, #6b7280);
+}
+
+.delete-btn {
+    margin-top: 15px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 6px;
+    background: #ef4444;
+    color: white;
+    cursor: pointer;
+    font-size: 0.85rem;
+}
+
+.delete-btn:hover {
+    background: #dc2626;
 }

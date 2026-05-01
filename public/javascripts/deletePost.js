@@ -1,12 +1,11 @@
 document.querySelectorAll(".deleteBtn").forEach(button => {
     button.addEventListener("click", async function (e) {
         e.preventDefault();
-       const jobId = this.dataset.jobId;
+
+        const jobId = this.dataset.jobId;
 
         const isConfirmed = confirm("Are you sure to delete the post?");
-        if (!isConfirmed) {
-            return;
-        }
+        if (!isConfirmed) return;
 
         try {
             const response = await fetch(`/recruiter/${jobId}/delete`, {
@@ -18,10 +17,9 @@ document.querySelectorAll(".deleteBtn").forEach(button => {
             alert(data.message);
 
             if (data.success) {
-                 window.location.reload();
+                window.location.reload();
             }
-        }
-        catch (err) {
+        } catch (err) {
             alert("Something went wrong");
         }
     });

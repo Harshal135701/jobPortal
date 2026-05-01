@@ -4,58 +4,86 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>My Applications</title>
+
     <link rel="stylesheet" href="/stylesheets/myapplication.css">
     <link rel="stylesheet" href="/stylesheets/navbar.css">
 </head>
 
 <body>
-    <%- include("partials/navbar")%>
+
+    <%- include("partials/navbar") %>
+
         <div class="container">
 
+            <!-- Title -->
             <h1>My <span style="color:#6d28d9;">Applications</span></h1>
 
+            <!-- Message -->
             <% if (typeof message !=='undefined' ) { %>
                 <p class="message">
                     <%= message %>
                 </p>
                 <% } %>
 
+                    <!-- Empty State -->
                     <% if (applications.length===0) { %>
                         <p class="empty">No applications yet</p>
                         <% } else { %>
+
                             <div class="applications-grid">
+
                                 <% applications.forEach(application=> { %>
-                                    <div class="application-card">
+
+                                    <!-- Card -->
+                                    <div class="application-card <%= application.job ? '' : 'closed' %>">
 
                                         <% if (application.job) { %>
+
+                                            <!-- Job Available -->
                                             <h2>
                                                 <%= application.job.title %>
                                             </h2>
+
                                             <p><strong>Company:</strong>
-                                                <%= application.job.company %>
+                                                <%= application.job.company || "N/A" %>
                                             </p>
                                             <p><strong>Location:</strong>
-                                                <%= application.job.location %>
+                                                <%= application.job.location || "N/A" %>
                                             </p>
-                                            <p><strong>Salary:</strong> ₹<%= application.job.salary %>
+                                            <p><strong>Salary:</strong> ₹<%= application.job.salary || "Not disclosed"
+                                                    %>
                                             </p>
-                                            <p class="status"><strong>Status:</strong>
+
+                                            <!-- Status Badge -->
+                                            <p class="status <%= application.status %>">
                                                 <%= application.status %>
                                             </p>
+
                                             <% } else { %>
-                                                <h2>Job No Longer Available</h2>
-                                                <p><strong>Status:</strong> This job was deleted by recruiter</p>
-                                                <p class="status"><strong>Application Status:</strong>
+
+                                                <!-- Job Deleted -->
+                                                <h2>⚠️ Job Closed</h2>
+                                                <p>This position is no longer available</p>
+
+                                                <p class="status closed">
                                                     <%= application.status %>
                                                 </p>
-                                                <% } %>
 
+                                                <% } %>
+                                                    <button class="delete-btn" data-id="<%= application._id %>">
+                                                        Withdraw
+                                                    </button>
                                     </div>
+
                                     <% }) %>
+
                             </div>
+
                             <% } %>
+
         </div>
+        <script src="/javascripts/withdrawalApplication.js"></script>
 </body>
 
 </html>
