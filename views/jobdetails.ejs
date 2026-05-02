@@ -35,11 +35,15 @@
                 </p>
             </div>
 
-            <form action="/applications/apply/<%= jobpost._id %>" method="post">
+            
+
+            <form id="formForApply" data-jobid="<%=jobpost._id%>"">
                 <button class="apply-btn">Apply Now</button>
             </form>
         </div>
     </div>
+
+    <script src="/javascripts/applyJob.js"></script>
 </body>
 
 </html>

@@ -8,6 +8,7 @@ async function ApplyForJob(req, res) {
         const applicantId = req.user._id;
         if (!jobId || !applicantId) {
             return res.status(400).json({
+                success:false,
                 message: "The error occurs while fetching details"
             })
         }

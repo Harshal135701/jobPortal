@@ -33,7 +33,11 @@ const jobSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "user",
         required: true
-    }
+    },
+    category: {
+    type: String,
+    required: true
+},
 }, { timestamps: true })
 
 module.exports = mongoose.model("job", jobSchema)
