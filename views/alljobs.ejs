@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="en">
 
 <head>
@@ -11,100 +10,93 @@
 </head>
 
 <body>
+
     <%- include("partials/navbar") %>
 
-        ```
         <div class="page-container">
+
             <h1 class="page-title">Available <span>Jobs</span></h1>
 
-
+            <!-- Controls -->
             <div class="controls-bar">
 
-
-                <!-- 🔍 Search -->
                 <form action="/jobs/alljobs" method="GET" class="search-form">
-
                     <input type="text" name="keyword" placeholder="Search jobs..." value="<%= keyword || '' %>">
-
                     <input type="hidden" name="category" value="<%= category || '' %>">
                     <input type="hidden" name="sort" value="<%= sort || '' %>">
-
                     <button type="submit">Search</button>
                 </form>
 
-                <!-- 🎯 Sort -->
                 <form action="/jobs/alljobs" method="GET" class="sort-form">
-
                     <input type="hidden" name="keyword" value="<%= keyword || '' %>">
                     <input type="hidden" name="category" value="<%= category || '' %>">
 
                     <select name="sort" onchange="this.form.submit()">
-                        <!-- onchange triggered when the value is modified  -->
-
                         <option value="">Sort By</option>
-
-                        <option value="latest" <%=sort==='latest' ? 'selected' : '' %>>
-                            Latest Jobs
-                        </option>
-
-                        <option value="salary_high" <%=sort==='salary_high' ? 'selected' : '' %>>
-                            Salary: High → Low
-                        </option>
-
-                        <option value="salary_low" <%=sort==='salary_low' ? 'selected' : '' %>>
-                            Salary: Low → High
-                        </option>
-
+                        <option value="latest" <%=sort==='latest' ? 'selected' : '' %>>Latest</option>
+                        <option value="salary_high" <%=sort==='salary_high' ? 'selected' : '' %>>High Salary</option>
+                        <option value="salary_low" <%=sort==='salary_low' ? 'selected' : '' %>>Low Salary</option>
                     </select>
-
                 </form>
 
             </div>
 
-            <!--  -->
-            <!--  -->
+            <!-- Jobs -->
             <div class="jobs-container">
                 <% if (jobs.length===0) { %>
-                    <p>No jobs available right now.</p>
+                    <div class="empty-state">No jobs available right now 🚀</div>
                     <% } else { %>
+
                         <% jobs.forEach(job=> { %>
                             <div class="job-card">
-                                <h2>
-                                    <%= job.title %>
-                                </h2>
-                                <p><strong>Company:</strong>
-                                    <%= job.company %>
-                                </p>
-                                <p><strong>Salary:</strong> ₹<%= job.salary %>
-                                </p>
-                                <p><strong>Location:</strong>
-                                    <%= job.location %>
-                                </p>
 
-                                <a href="/jobs/<%= job._id %>" class="details-btn">
-                                    View Details
-                                </a>
+                                <div class="job-info">
+                                    <h2>
+                                        <%= job.title %>
+                                    </h2>
+                                    <p><strong>Company:</strong>
+                                        <%= job.company %>
+                                    </p>
+                                    <p><strong>Salary:</strong> ₹<%= job.salary %>
+                                    </p>
+                                    <p><strong>Location:</strong>
+                                        <%= job.location %>
+                                    </p>
+                                </div>
+
+                                <div class="card-actions">
+                                    <a href="/jobs/<%= job._id %>" class="details-btn">View Details</a>
+
+                                    <button
+                                        class="bookmark-btn <%= bookmarkedJobs && bookmarkedJobs.some(id => id && id.toString() === job._id.toString()) ? 'saved' : '' %>"
+                                        data-id="<%= job._id %>">
+
+                                        <%= bookmarkedJobs && bookmarkedJobs.some(id=> id && id.toString() ===
+                                            job._id.toString())
+                                            ? "Saved"
+                                            : "Save Job" %>
+                                    </button>
+                                </div>
+
                             </div>
                             <% }) %>
+
                                 <% } %>
             </div>
 
-
-            <%if(totalPages >0){%>
-                <!-- 🔥 Pagination -->
+            <!-- Pagination -->
+            <% if (totalPages> 0) { %>
                 <div class="pagination">
 
                     <% if (currentPage> 1) { %>
                         <a
-                            href="/jobs/alljobs?page=<%= currentPage -1 %>&keyword=<%= keyword || '' %>&category=<%= category || '' %>">
-                            ←
-                        </a>
+                            href="/jobs/alljobs?page=<%= currentPage -1 %>&keyword=<%= keyword || '' %>&category=<%= category || '' %>">←</a>
                         <% } else { %>
                             <span class="disabled">←</span>
                             <% } %>
 
-                                <% for(let i=1; i <=totalPages; i++) { %>
-                                    <% if(i===currentPage) { %>
+                                <% for (let i=1; i <=totalPages; i++) { %>
+                                    <% if (i===currentPage) { %>
                                         <span class="active">
                                             <%= i %>
                                         </span>
@@ -118,19 +110,17 @@
 
                                                     <% if (currentPage < totalPages) { %>
                                                         <a
-                                                            href="/jobs/alljobs?page=<%= currentPage + 1 %>&keyword=<%= keyword || '' %>&category=<%= category || '' %>">
-                                                            →
-                                                        </a>
+                                                            href="/jobs/alljobs?page=<%= currentPage + 1 %>&keyword=<%= keyword || '' %>&category=<%= category || '' %>">→</a>
                                                         <% } else { %>
                                                             <span class="disabled">→</span>
                                                             <% } %>
 
                 </div>
-                <%}%>
+                <% } %>
 
         </div>
-        ```
 
+        <script src="/javascripts/alljobs.js"></script>
 </body>
 
 </html>

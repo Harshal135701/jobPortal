@@ -15,6 +15,12 @@ const applicationSchema = new mongoose.Schema({
         type: String,
         enum: ['pending','accepted','rejected','shortlisted','closed','withdrawn'],
         default: 'pending'
+    },
+    resumeUrl:{
+        type:String
+    },
+    resumeName:{
+        type:String
     }
 }, { timestamps: true });
 // Making the job and applicant as a index to avoid there combination in db again more than 1 

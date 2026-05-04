@@ -51,9 +51,12 @@ async function getAlljob(req, res) {
                 totalPages,
                 keyword,
                 category,
-                sort
+                sort,
+                 bookmarkedJobs: []   // 🔥 ADD THIS
             });
         }
+
+        const user = await userSchema.findById(req.user._id);
 
         return res.status(200).render("alljobs", {
             jobs,
@@ -62,7 +65,8 @@ async function getAlljob(req, res) {
             currentPage: page,
             keyword,
             category,
-            sort
+            sort,
+            bookmarkedJobs: user.bookmark
         });
 
     } catch (err) {
@@ -89,6 +93,60 @@ async function showJobPost(req, res) {
     }
 }
 
+async function bookMarkedJobPost(req, res) {
+    try {
+        const jobId = req.params.id;
+        const userId = req.user._id;
+        const user = await userSchema.findById(userId);
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: "User not found"
+            });
+        }
+        // some is js method used to check the job id is present in bookmark or not 
+        console.log(user.bookmark);
+        const isBookMarked = user.bookmark.some(
+            id => id && id.toString() === jobId
+        );
+
+        if (isBookMarked) {
+            user.bookmark.pull(jobId);
+        }
+        else {
+            // add to set only add once like a set
+            user.bookmark.addToSet(jobId);
+        }
+
+        await user.save();
+
+        return res.json({
+            success: true,
+            bookmarked: !isBookMarked
+        });
+
+    }
+    catch (err) {
+        console.log(err)
+        return res.status(500).json({
+            message: err.message
+        })
+    }
+}
+
+async function getSavedJobs(req, res) {
+    try {
+        const user = await userSchema.findById(req.user._id).populate('bookmark')
+
+        return res.render("getSavedJobs", {
+            jobs: user.bookmark
+        });
+    }
+    catch (err) {
+        console.log(err);
+        res.status(500).send("Something went wrong");
+    }
+}
 
 
-module.exports = { getAlljob, showJobPost }
+module.exports = { getAlljob, showJobPost, bookMarkedJobPost, getSavedJobs }

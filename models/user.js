@@ -30,7 +30,11 @@ const userSchema = new mongoose.Schema({
     profilepic:{
         type:String,
         default:'/images/default.webp'
-    }
+    },
+    bookmark:[{
+        type:mongoose.Schema.Types.ObjectId,
+        ref:"job"
+    }]
 
 }, { timestamps: true })
 

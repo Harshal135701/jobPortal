@@ -2,13 +2,13 @@ const applicationSchema = require('../models/application')
 const jobSchema = require('../models/job')
 const userSchema = require('../models/user')
 
-async function ApplyForJob(req, res) {
+async function ApplyForJobGetRoute(req, res) {
     try {
         const jobId = req.params.id;
         const applicantId = req.user._id;
         if (!jobId || !applicantId) {
             return res.status(400).json({
-                success:false,
+                success: false,
                 message: "The error occurs while fetching details"
             })
         }
@@ -16,30 +16,62 @@ async function ApplyForJob(req, res) {
         if (!jobIs) {
             return res.status(404).json({ message: "Job not found", success: false });
         }
-        const applicantExist = await applicationSchema.findOne({
-            applicant: applicantId,
-            job: jobId
-        })
 
-        if (applicantExist) {
-            return res.status(400).json({
-                message: "You have already applied for this job",
-                success: false
-            })
-        }
-        await applicationSchema.create({
-            job: jobId,
-            applicant: applicantId,
-        })
-
-        return res.status(201).json({
-            message: "Application submitted successfully",
-            success: true
+        return res.status(200).render("JobPostFullPage", {
+            job: jobIs
         })
     }
     catch (err) {
+        console.log(err);
         return res.status(500).json({
+            job: jobIs,
             message: err.message
+        })
+    }
+}
+
+async function applyForJobPostRoute(req, res) {
+    try {
+        const jobid = req.params.id;
+        const applicantIs = req.user._id;
+        const jobIs = await jobSchema.findById(jobid)
+
+        if (!req.file) {
+            return res.status(400).render("JobPostFullPage", {
+                message: "Resume is required",
+                job: jobIs
+            });
+        }
+
+        console.log(req.file);
+
+        const fileIs = req.file.path;
+
+        const alreadyApplied = await applicationSchema.findOne({
+            job: jobid,
+            applicant: applicantIs
+        });
+
+        if (alreadyApplied) {
+            return res.status(400).render("JobPostFullPage", {
+                message: "You already applied",
+                job: jobIs
+            });
+        }
+        await applicationSchema.create({
+            job: jobid,
+            applicant: applicantIs,
+            resumeUrl: fileIs,
+            resumeName: req.file.filename
+        })
+        return res.redirect('/applications/my');
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).render("JobPostFullPage", {
+            message: err.message,
+            job: jobIs
+
         })
     }
 }
@@ -97,16 +129,17 @@ async function WithdrawalOfApplication(req, res) {
         });
     }
     catch (err) {
-    console.log("ERROR:", err);   // 🔥 ADD THIS
-    return res.status(500).json({
-        success:false,
-        message: err.message      // 🔥 SHOW REAL ERROR
-    })
-}
+        console.log("ERROR:", err);   // 🔥 ADD THIS
+        return res.status(500).json({
+            success: false,
+            message: err.message      // 🔥 SHOW REAL ERROR
+        })
+    }
 }
 
 module.exports = {
-    ApplyForJob,
-    getAllAppliedJobs, WithdrawalOfApplication
+    ApplyForJobGetRoute,
+    getAllAppliedJobs, WithdrawalOfApplication,
+    applyForJobPostRoute
 
 }
