@@ -7,9 +7,15 @@ async function getAlljob(req, res) {
         const limit = parseInt(req.query.limit) || 3;
         const skip = (page - 1) * limit;
 
-        const keyword = req.query.keyword || "";
-        const category = req.query.category || "";
-        const sort = req.query.sort || "";
+        const keyword = req.query.keyword?.trim() || "";
+        const category = req.query.category?.trim() || "";
+        const sort = req.query.sort?.trim() || "";
+        const location = req.query.location?.trim() || "";
+        const jobType = req.query.jobType?.trim() || "";
+        const salary = req.query.salary?.trim() || "";
+        const experienceLevel = req.query.experienceLevel?.trim() || "";
+        // ?. prevent the undefined document from trim
+        // means it will only get used when const is not undefined
 
         let sortOption = {};
         if (sort === 'latest') {
@@ -17,23 +23,39 @@ async function getAlljob(req, res) {
         }
         else if (sort === 'salary_high') {
             sortOption = { salary: -1 };
+            // -1 means High to low
         }
         else if (sort === 'salary_low') {
             sortOption = { salary: 1 };
         }
+        let query = {}
 
-        const query = {
-            $and: [
-                {
-                    $or: [
-                        { title: { $regex: keyword, $options: "i" } },
-                        { description: { $regex: keyword, $options: "i" } }
-                    ]
-                },
-                // options used for case insensitiveness
-                category ? { category: { $regex: category, $options: "i" } } : {}
-            ]
-        };
+        if (keyword) {
+            query.$or = [
+                { title: { $regex: keyword, $options: "i" } },
+                { description: { $regex: keyword, $options: "i" } }
+            ];
+        }
+
+        if (experienceLevel) {
+            query.experienceLevel = { $gte: Number(experienceLevel) };
+        }
+
+        if (category) {
+            query.category = { $regex: category, $options: "i" }
+        }
+
+        if (location) {
+            query.location = { $regex: location, $options: "i" }
+        }
+
+        if (jobType) {
+            query.jobType = jobType
+        }
+
+        if (salary) {
+            query.salary = { $gte: Number(salary) }
+        }
 
         const jobs = await jobSchema.find(query)
             .sort(sortOption)
@@ -52,7 +74,11 @@ async function getAlljob(req, res) {
                 keyword,
                 category,
                 sort,
-                 bookmarkedJobs: []   // 🔥 ADD THIS
+                location,
+                jobType,
+                experienceLevel,
+                salary,
+                bookmarkedJobs: []
             });
         }
 
@@ -66,6 +92,10 @@ async function getAlljob(req, res) {
             keyword,
             category,
             sort,
+            location,
+            jobType,
+            salary,
+            experienceLevel,
             bookmarkedJobs: user.bookmark
         });
 

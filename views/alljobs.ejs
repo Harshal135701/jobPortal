@@ -22,6 +22,34 @@
 
                 <form action="/jobs/alljobs" method="GET" class="search-form">
                     <input type="text" name="keyword" placeholder="Search jobs..." value="<%= keyword || '' %>">
+
+                    <select name="location">
+                        <option value="">All Locations</option>
+                        <option value="Mumbai" <%=location==="Mumbai" ? "selected" : "" %>>Mumbai</option>
+                        <option value="Nashik" <%=location==="Nashik" ? "selected" : "" %>>Nashik</option>
+                        <option value="Bangalore" <%=location==="Bangalore" ? "selected" : "" %>>Bangalore</option>
+                        <option value="Delhi" <%=location==="Delhi" ? "selected" : "" %>>Delhi</option>
+                        <option value="Pune" <%=location==="Pune" ? "selected" : "" %>>Pune</option>
+                    </select>
+
+                    <select name="jobType">
+                        <option value="">All Job Types</option>
+                        <option value="Full-time" <%=jobType==="Full-time" ? "selected" :""%>>Full-time</option>
+                        <option value="Part-time" <%=jobType==="Part-time" ? "selected" :""%>>Part-time</option>
+                        <option value="Internship" <%=jobType==="Internship" ? "selected" :""%>>Internship</option>
+                        <option value="Remote" <%=jobType==="Remote" ? "selected" :""%>>Remote</option>
+                    </select>
+
+                    <select name="experienceLevel">
+                        <option value="">Experience</option>
+                        <option value="0" <%=experienceLevel=="0" ? "selected" : "" %>>Fresher</option>
+                        <option value="1" <%=experienceLevel=="1" ? "selected" : "" %>>1+ Years</option>
+                        <option value="2" <%=experienceLevel=="2" ? "selected" : "" %>>2+ Years</option>
+                        <option value="3" <%=experienceLevel=="3" ? "selected" : "" %>>3+ Years</option>
+                    </select>
+
+                    <input type="number" name="salary" placeholder="Min Salary (₹)" value="<%=salary || "" %>">
+
                     <input type="hidden" name="category" value="<%= category || '' %>">
                     <input type="hidden" name="sort" value="<%= sort || '' %>">
                     <button type="submit">Search</button>
@@ -30,6 +58,10 @@
                 <form action="/jobs/alljobs" method="GET" class="sort-form">
                     <input type="hidden" name="keyword" value="<%= keyword || '' %>">
                     <input type="hidden" name="category" value="<%= category || '' %>">
+                    <input type="hidden" name="location" value="<%= location || '' %>">
+                    <input type="hidden" name="jobType" value="<%= jobType || '' %>">
+                    <input type="hidden" name="salary" value="<%= salary || '' %>">
+                    <input type="hidden" name="experienceLevel" value="<%= experienceLevel || '' %>">
 
                     <select name="sort" onchange="this.form.submit()">
                         <option value="">Sort By</option>
@@ -37,6 +69,7 @@
                         <option value="salary_high" <%=sort==='salary_high' ? 'selected' : '' %>>High Salary</option>
                         <option value="salary_low" <%=sort==='salary_low' ? 'selected' : '' %>>Low Salary</option>
                     </select>
+                    <a href="/jobs/alljobs" class="clear-btn">Clear</a>
                 </form>
 
             </div>
@@ -44,7 +77,7 @@
             <!-- Jobs -->
             <div class="jobs-container">
                 <% if (jobs.length===0) { %>
-                    <div class="empty-state">No jobs available right now 🚀</div>
+                    <div class="empty-state">No jobs available right now !</div>
                     <% } else { %>
 
                         <% jobs.forEach(job=> { %>
@@ -70,6 +103,7 @@
                                     <button
                                         class="bookmark-btn <%= bookmarkedJobs && bookmarkedJobs.some(id => id && id.toString() === job._id.toString()) ? 'saved' : '' %>"
                                         data-id="<%= job._id %>">
+                                        <!-- This is checking thaat the bookmarked is exist or not or it is exist the job id matches to bookmarked id if yes(Implice) class saved othewise not  -->
 
                                         <%= bookmarkedJobs && bookmarkedJobs.some(id=> id && id.toString() ===
                                             job._id.toString())
@@ -90,7 +124,7 @@
 
                     <% if (currentPage> 1) { %>
                         <a
-                            href="/jobs/alljobs?page=<%= currentPage -1 %>&keyword=<%= keyword || '' %>&category=<%= category || '' %>">←</a>
+                            href="/jobs/alljobs?page=<%= currentPage -1 %>&keyword=<%= keyword || '' %>&category=<%= category || ''%>&location=<%=location || ''%>&salary=<%=salary || ''%>&jobType=<%=jobType || ''%>&experienceLevel=<%=experienceLevel || ""%>">←</a>
                         <% } else { %>
                             <span class="disabled">←</span>
                             <% } %>
@@ -102,7 +136,7 @@
                                         </span>
                                         <% } else { %>
                                             <a
-                                                href="/jobs/alljobs?page=<%= i %>&keyword=<%= keyword || '' %>&category=<%= category || '' %>">
+                                                href="/jobs/alljobs?page=<%= i %>&keyword=<%= keyword || '' %>&category=<%= category || '' %>&location=<%=location || ''%>&salary=<%=salary || ''%>&jobType=<%=jobType || ''%>&experienceLevel=<%=experienceLevel || ""%>">
                                                 <%= i %>
                                             </a>
                                             <% } %>
@@ -110,7 +144,7 @@
 
                                                     <% if (currentPage < totalPages) { %>
                                                         <a
-                                                            href="/jobs/alljobs?page=<%= currentPage + 1 %>&keyword=<%= keyword || '' %>&category=<%= category || '' %>">→</a>
+                                                            href="/jobs/alljobs?page=<%= currentPage + 1 %>&keyword=<%= keyword || '' %>&category=<%= category || '' %>&location=<%=location || ''%>&salary=<%=salary || ''%>&jobType=<%=jobType || ''%>&experienceLevel=<%=experienceLevel || ""%>">→</a>
                                                         <% } else { %>
                                                             <span class="disabled">→</span>
                                                             <% } %>
