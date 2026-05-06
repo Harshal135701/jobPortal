@@ -178,5 +178,22 @@ async function getSavedJobs(req, res) {
     }
 }
 
+async function RemoveBookmark(req, res) {
+    try {
+        const jobId = req.params.id;
+        const userId = req.user._id;
 
-module.exports = { getAlljob, showJobPost, bookMarkedJobPost, getSavedJobs }
+        await userSchema.findByIdAndUpdate(userId,{
+            $pull:{bookmark:jobId}
+        })
+
+         res.json({ success: true });
+
+    }
+    catch (err) {
+        res.json({ success: false });
+    }
+}
+
+
+module.exports = { getAlljob, showJobPost, bookMarkedJobPost, getSavedJobs ,RemoveBookmark}

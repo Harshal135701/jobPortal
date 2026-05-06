@@ -1,6 +1,7 @@
 const applicationSchema = require('../models/application')
 const jobSchema = require('../models/job')
-const userSchema = require('../models/user')
+const userSchema = require('../models/user');
+const { link } = require('../routes/applicationRoutes');
 
 async function ApplyForJobGetRoute(req, res) {
     try {
@@ -75,24 +76,83 @@ async function applyForJobPostRoute(req, res) {
         })
     }
 }
-
 async function getAllAppliedJobs(req, res) {
     try {
-        const userId = req.user._id;
-        const applications = await applicationSchema
-            .find({ applicant: userId })
-            .populate("job");
-        // In application model we store the reference of job and applicant so when we try to fetch the application data it will fetch the ids instead of actaul content so to avoid it we used the populate() 
-        // console.log("Applications Data:", applications);
-        return res.status(200).render("myapplication", {
-            applications
-        })
-    }
-    catch (err) {
-        return res.status(500).render("myapplication", {
+        const { status = "all", search = "", sort = "latest", page = 1 } = req.query;
+
+        const limit = 3;
+        const currentPage = parseInt(page) || 1;
+        const skip = (currentPage - 1) * limit;
+
+        const pipeline = [
+            { $match: { applicant: req.user._id } },
+
+            {
+                $lookup: {
+                    from: "jobs",
+                    localField: "job",
+                    foreignField: "_id",
+                    as: "job"
+                }
+            },
+            {
+                $unwind: {
+                    path: "$job",
+                    preserveNullAndEmptyArrays: true
+                }
+            }
+        ];
+
+        // ✅ Filters
+        if (status !== "all") {
+            pipeline.push({ $match: { status } });
+        }
+
+        if (search) {
+            pipeline.push({
+                $match: {
+                    $or: [
+                        { "job.title": { $regex: search, $options: "i" } },
+                        { "job.description": { $regex: search, $options: "i" } }
+                    ]
+                }
+            });
+        }
+
+        // ✅ Facet (data + count)
+        pipeline.push({
+            $facet: {
+                data: [
+                    { $sort: { createdAt: sort === "oldest" ? 1 : -1 } },
+                    { $skip: skip },
+                    { $limit: limit }
+                ],
+                totalCount: [
+                    { $count: "total" }
+                ]
+            }
+        });
+
+        const result = await applicationSchema.aggregate(pipeline);
+
+        const applications = result[0].data;
+        const total = result[0].totalCount[0]?.total || 0;
+
+        return res.render("myapplication", {
+            applications,
+            total,
+            page: currentPage,
+            pages: Math.ceil(total / limit),
+            sort,
+            status,
+            search
+        });
+
+    } catch (err) {
+        return res.render("myapplication", {
             applications: [],
             message: err.message
-        })
+        });
     }
 }
 

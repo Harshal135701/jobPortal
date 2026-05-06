@@ -25,11 +25,41 @@
                     <%= message %>
                 </p>
                 <% } %>
+                    <form method="get" action="/applications/my" class="filters">
+
+                        <input type="hidden" name="page" value="1">
+
+                        <input type="text" name="search" placeholder="Search jobs..." value="<%= search || '' %>">
+
+                        <select name="sort">
+                            <option value="latest" <%=sort==="latest" ?"selected":"" %>>Latest</option>
+                            <option value="oldest" <%=sort==="oldest" ?"selected":"" %>>Oldest</option>
+                        </select>
+
+                        <select name="status">
+                            <option value="all">All</option>
+                            <option value="pending" <%=status==="pending" ?"selected":"" %>>Pending</option>
+                            <option value="accepted" <%=status==="accepted" ?"selected":"" %>>Accepted</option>
+                            <option value="rejected" <%=status==="rejected" ?"selected":"" %>>Rejected</option>
+                            <option value="shortlisted" <%=status==="shortlisted" ?"selected":"" %>>Shortlisted</option>
+                            <option value="closed" <%=status==="closed" ?"selected":"" %>>Closed</option>
+                            <option value="withdrawn" <%=status==="withdrawn" ?"selected":"" %>>Withdrawn</option>
+                        </select>
+
+                        <button type="submit">Apply</button>
+                        <a href="/applications/my" class="clear-btn">Clear</a>
+                    </form>
 
                     <!-- Empty State -->
                     <% if (applications.length===0) { %>
-                        <p class="empty">No applications yet</p>
+                        <p class="empty">
+                            No applications yet 🚀 <br>
+                            <a href="/jobs/alljobs">Explore Jobs</a>
+                        </p>
                         <% } else { %>
+
+
+
 
                             <div class="applications-grid">
 
@@ -54,6 +84,19 @@
                                             <p><strong>Salary:</strong> ₹<%= application.job.salary || "Not disclosed"
                                                     %>
                                             </p>
+                                            <p><Strong>Resume :</Strong>
+                                                <%if(application.resumeUrl){%>
+                                                    <span>Uploaded</span>
+
+                                                    <%}else{%>
+                                                        <span>Not Uploaded</span>
+                                                        <%}%>
+                                            </p>
+                                            <p><strong>Applied At:</strong>
+                                                <%= new Date(application.createdAt).toLocaleDateString()%>
+                                            </p>
+
+                                            <a href="/jobs/<%=application.job._id%>">View job</a>
 
                                             <!-- Status Badge -->
                                             <p class="status <%= application.status %>">
@@ -81,6 +124,34 @@
                             </div>
 
                             <% } %>
+
+        </div>
+        <div class="pagination">
+
+            <% if (page> 1) { %>
+                <a class="page-btn"
+                    href="?page=<%= page-1 %>&sort=<%= sort %>&status=<%= status %>&search=<%= search %>">
+                    ←
+                </a>
+                <% } else { %>
+                    <span class="page-btn disabled">←</span>
+                    <% } %>
+
+                        <% for(let i=1; i <=pages; i++) { %>
+                            <a href="?page=<%= i %>&sort=<%= sort %>&status=<%= status %>&search=<%= search %>"
+                                class="page-btn <%= i === page ? 'active' : '' %>">
+                                <%= i %>
+                            </a>
+                            <% } %>
+
+                                <% if (page < pages) { %>
+                                    <a class="page-btn"
+                                        href="?page=<%= page+1 %>&sort=<%= sort %>&status=<%= status %>&search=<%= search %>">
+                                        →
+                                    </a>
+                                    <% } else { %>
+                                        <span class="page-btn disabled">→</span>
+                                        <% } %>
 
         </div>
         <script src="/javascripts/withdrawalApplication.js"></script>

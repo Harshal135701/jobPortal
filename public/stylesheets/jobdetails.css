@@ -8,12 +8,23 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f8fafc;
     min-height: 100vh;
-    padding: 2rem;
+    padding: 0;
 }
-
 .details-container {
     max-width: 900px;
     margin: auto;
+}
+
+.back-link {
+    display: inline-block;
+    margin-bottom: 1rem;
+    text-decoration: none;
+    color: #2563eb;
+    font-weight: 600;
+}
+
+.back-link:hover {
+    text-decoration: underline;
 }
 
 .job-card {
@@ -87,4 +98,8 @@ body {
 .message {
     color: red;
     margin-bottom: 1rem;
+}
+.details-container {
+    max-width: 900px;
+    margin: 40px auto;
 }

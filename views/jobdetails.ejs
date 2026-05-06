@@ -5,24 +5,26 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Job Details - NextHire</title>
+
     <link rel="stylesheet" href="/stylesheets/jobdetails.css">
+    <link rel="stylesheet" href="/stylesheets/navbar.css">
 </head>
 
 <body>
-    <a href="/jobs/alljobs">back</a>
+
+    <%- include("partials/navbar") %>
+
     <div class="details-container">
+
+        <a href="/jobs/alljobs" class="back-link">← Back to Jobs</a>
+
         <div class="job-card">
-            <h1>
-                <%= jobpost.title %>
-            </h1>
+
+            <h1><%= jobpost.title %></h1>
 
             <div class="job-meta">
-                <span class="meta-item">
-                    <%= jobpost.company %>
-                </span>
-                <span class="meta-item">
-                    <%= jobpost.location %>
-                </span>
+                <span class="meta-item"><%= jobpost.company %></span>
+                <span class="meta-item"><%= jobpost.location %></span>
             </div>
 
             <div class="salary-box">
@@ -30,17 +32,17 @@
             </div>
 
             <div class="description-box">
-                <p><strong>Description:</strong>
+                <p>
+                    <strong>Description:</strong><br>
                     <%= jobpost.description %>
                 </p>
             </div>
 
-
-            <form action=" /applications/apply/<%=jobpost._id%>" method="get">
+            <form action="/applications/apply/<%= jobpost._id %>" method="get">
                 <button class="apply-btn">Apply Now</button>
             </form>
+
         </div>
     </div>
 </body>
-
 </html>
