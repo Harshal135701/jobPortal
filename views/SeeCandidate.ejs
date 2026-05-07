@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Applicant Details</title>
+
+    <link rel="stylesheet" href="/stylesheets/navbar.css">
+    <link rel="stylesheet" href="/stylesheets/seeCandidate.css">
+</head>
+
+<body>
+
+    <%- include("partials/navbar") %>
+
+    <div class="candidate-container">
+
+        <a href="/recruiter/<%= applicationId %>/applications" class="back-btn">
+            ← Back
+        </a>
+
+        <% if(typeof error !== "undefined") { %>
+            <p class="error-message">
+                <%= error %>
+            </p>
+        <% } %>
+
+        <div class="candidate-card">
+
+            <div class="candidate-header">
+                <h1>
+                    <%= user.fullname %>
+                </h1>
+
+                <span class="candidate-role">
+                    <%= user.occupation %>
+                </span>
+            </div>
+
+            <div class="candidate-info">
+
+                <div class="info-box">
+                    <h3>Experience</h3>
+                    <p>
+                        <%= user.experience %> Years
+                    </p>
+                </div>
+
+                <div class="info-box">
+                    <h3>Resume</h3>
+
+                    <a href="<%= userResume %>" target="_blank" class="resume-btn">
+                        View Resume
+                    </a>
+                </div>
+
+            </div>
+
+            <form class="updateStatusForm" data-applicant-id="<%= applicant._id %>">
+
+                <h2>Update Application Status</h2>
+
+                <div class="status-group">
+
+                    <select name="status" class="status" required>
+                        <option value="">Change Status</option>
+                        <option value="pending">Pending</option>
+                        <option value="accepted">Accepted</option>
+                        <option value="rejected">Rejected</option>
+                        <option value="shortlisted">Shortlisted</option>
+                    </select>
+
+                    <button type="submit">
+                        Update Status
+                    </button>
+
+                </div>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <script src="/javascripts/updateStatus.js"></script>
+
+</body>
+
+</html>

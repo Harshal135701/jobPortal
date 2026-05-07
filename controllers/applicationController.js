@@ -46,7 +46,7 @@ async function applyForJobPostRoute(req, res) {
 
         console.log(req.file);
 
-        const fileIs = req.file.path;
+        const fileIs = "/resume/"+req.file.filename;
 
         const alreadyApplied = await applicationSchema.findOne({
             job: jobid,

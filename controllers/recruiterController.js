@@ -1,12 +1,12 @@
 const jobSchema = require('../models/job')
 const userSchema = require('../models/user')
 const applicationSchema = require('../models/application')
+const sendStatusEmail = require("../services/emailService")
 
 async function JobPostCreation(req, res) {
     try {
         const { title, description, company, location, salary, jobType, experienceLevel } = req.body;
         const recruiterId = req.user._id;
-        console.log(recruiterId)
         if (!title || !description || !company || !location || !salary || !jobType || experienceLevel == undefined) {
 
             return res.status(400).render("jobCreation", {
@@ -172,7 +172,7 @@ async function getAllCandidatesAppliedForJob(req, res) {
             .find({ job: jobId })
             .select("applicant status")
             // Selct use to select only things we want to show on api
-            .populate("applicant", "fullname email occupation -_id")
+            .populate("applicant", "fullname email occupation experience ")
         if (applicants.length == 0) {
             return res.status(200).render("getAllCandidate", {
                 applicants: [],
@@ -180,7 +180,8 @@ async function getAllCandidatesAppliedForJob(req, res) {
             })
         }
         return res.status(200).render("getAllCandidate", {
-            applicants
+            applicants,
+            job: jobId
         })
     }
     catch (err) {
@@ -200,6 +201,8 @@ async function changeApplicationStatus(req, res) {
                 message: "Application not found"
             })
         }
+
+
         const { status } = req.body;
         if (!status) {
             return res.status(400).json({
@@ -214,8 +217,22 @@ async function changeApplicationStatus(req, res) {
                 message: "Application not found"
             })
         }
+        const applicantId = applicationIs.applicant;
+        const applicant = await userSchema.findById(applicantId);
+        if (!applicant) {
+            return res.status(404).json({
+                success: false,
+                message: "Applicant not found"
+            });
+        }
+
         applicationIs.status = status;
         await applicationIs.save();
+
+        if (status === "shortlisted" || status === "accepted") {
+            await sendStatusEmail(applicant.email, status);
+        }
+
         return res.status(200).json({
             success: true,
             message: "The status is updated"
@@ -267,11 +284,47 @@ async function loggedInRec(req, res) {
     }
 }
 
+async function SeeCandidate(req, res) {
+    try {
+        const applicationId = req.params.applicationId;
+        const applicantId = req.params.applicantId;
+
+        if (!applicantId || !applicationId) {
+            return res.status(404).render("SeeCandidate", {
+                success: false,
+                message: "The data not found"
+            })
+        }
+
+        const IfApplied = await applicationSchema.findOne({ job: applicationId, applicant: applicantId })
+        if (!IfApplied) {
+            return res.status(401).render("SeeCandidate", {
+                success: false,
+                message: "Unathorized"
+            })
+        }
+        const user = await userSchema.findById(applicantId);
+        return res.status(200).render("SeeCandidate", {
+            success: true,
+            applicationId,
+            user,
+            userResume: IfApplied.resumeUrl,
+            applicant: IfApplied
+        })
+    }
+    catch (err) {
+        return res.status(500).render("SeeCandidate", {
+            success: false,
+            message: err.message
+        })
+    }
+}
+
 
 
 module.exports = {
     JobPostCreation, updatePost, deletePost,
     getAllCandidatesAppliedForJob,
     changeApplicationStatus,
-    getAllJobs, getPageForJobCreation, updatePostGETpage, loggedInRec
+    getAllJobs, getPageForJobCreation, updatePostGETpage, loggedInRec, SeeCandidate
 }
