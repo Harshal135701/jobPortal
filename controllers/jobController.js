@@ -135,7 +135,6 @@ async function bookMarkedJobPost(req, res) {
             });
         }
         // some is js method used to check the job id is present in bookmark or not 
-        console.log(user.bookmark);
         const isBookMarked = user.bookmark.some(
             id => id && id.toString() === jobId
         );
@@ -157,7 +156,6 @@ async function bookMarkedJobPost(req, res) {
 
     }
     catch (err) {
-        console.log(err)
         return res.status(500).json({
             message: err.message
         })
@@ -173,7 +171,6 @@ async function getSavedJobs(req, res) {
         });
     }
     catch (err) {
-        console.log(err);
         res.status(500).send("Something went wrong");
     }
 }

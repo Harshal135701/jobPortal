@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update Profile</title>
+
+    <link rel="stylesheet" href="/stylesheets/navbar.css">
+    <link rel="stylesheet" href="/stylesheets/profile.css">
+</head>
+
+<body>
+
+    <%- include("partials/navbar") %>
+
+    <div class="profile-container">
+
+        <div class="profile-card">
+
+            <div class="profile-header">
+
+                <h2>Update Profile</h2>
+
+                <p>
+                    Keep your professional details updated for better opportunities
+                </p>
+
+            </div>
+
+            <form id="updateProfile" enctype="multipart/form-data">
+
+                <div class="form-group">
+
+                    <label>Full Name</label>
+
+                    <input
+                        type="text"
+                        name="fullname"
+                        placeholder="Enter your fullname"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Occupation</label>
+
+                    <input
+                        type="text"
+                        name="occupation"
+                        placeholder="Enter your occupation"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Experience (Years)</label>
+
+                    <input
+                        type="number"
+                        name="experience"
+                        placeholder="Enter experience"
+                    >
+
+                </div>
+
+                <div class="form-group">
+
+                    <label>Profile Picture</label>
+
+                    <input
+                        type="file"
+                        name="profilepic"
+                        class="file-input"
+                    >
+
+                </div>
+
+                <button type="submit" class="update-btn">
+                    Update Profile
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+    <script src="/javascripts/updateProfile.js"></script>
+
+</body>
+
+</html>

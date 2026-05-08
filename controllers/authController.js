@@ -91,7 +91,7 @@ async function loginUser(req, res) {
         if (checkUserExistOrNot.role === "candidate") {
             return res.status(200).redirect("/home");
         }
-        else{
+        else {
             return res.status(200).redirect("/recruiter/dashboard");
         }
 
@@ -135,4 +135,38 @@ async function logout(req, res) {
     }
 }
 
-module.exports = { registerUser, loginUser, profilePage, registerPage, loginPage, logout };
+async function UpdateProfile(req, res) {
+    try {
+        return res.render("profile");
+    }
+    catch (err) {
+        return res.redirect('/profile')
+    }
+}
+
+async function UpdateProfileThroughPatch(req, res) {
+    try {
+        const { fullname, occupation, experience } = req.body;
+        const updatedData = {
+            fullname,
+            occupation,
+            experience
+        };
+
+        if (req.file) {
+            updatedData.profilepic =
+                "/uploads/" + req.file.filename;
+        }
+        await userSchemaDb.findByIdAndUpdate(req.user._id, updatedData, { new: true })
+        return res.status(200).json({
+            message: "Profile updated successfully"
+        });
+    }
+    catch (err) {
+        return res.status(500).json({
+            message: err.message
+        });
+    }
+}
+
+module.exports = { registerUser, UpdateProfileThroughPatch, loginUser, profilePage, registerPage, loginPage, logout, UpdateProfile };

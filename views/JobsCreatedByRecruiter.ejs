@@ -5,59 +5,159 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Jobs</title>
+
     <link rel="stylesheet" href="/stylesheets/navbar.css">
     <link rel="stylesheet" href="/stylesheets/myJobs.css">
 </head>
 
 <body>
+
     <%- include("partials/navbar") %>
 
-        <div class="jobs-container">
-            <h2>My Posted Jobs</h2>
+    <div class="jobs-container">
 
-            <% if (typeof message !=="undefined" ) { %>
-                <p class="message">
-                    <%= message %>
+        <div class="top-section">
+
+            <div>
+                <h2>My Posted Jobs</h2>
+                <p class="subtitle">
+                    Manage your published jobs and applicants
                 </p>
+            </div>
+
+            <% if(jobs.length> 0){ %>
+
+                <form action="/recruiter/myJobs" method="GET">
+
+                    <select name="sortJobs" onchange="this.form.submit()" class="sort-select">
+
+                        <option value="">All Jobs</option>
+
+                        <option value="latest" <%=sortJobs==="latest" ? "selected" : "" %>>
+                            Latest
+                        </option>
+
+                        <option value="oldest" <%=sortJobs==="oldest" ? "selected" : "" %>>
+                            Oldest
+                        </option>
+
+                        <option value="highestpaying" <%=sortJobs==="highestpaying" ? "selected" : "" %>>
+                            Highest Paying
+                        </option>
+
+                        <option value="lowestpaying" <%=sortJobs==="lowestpaying" ? "selected" : "" %>>
+                            Lowest Paying
+                        </option>
+
+                        <option value="mostapplicants" <%=sortJobs==="mostapplicants" ? "selected" : "" %>>
+                            Most Applicants
+                        </option>
+
+                        <option value="leastapplicants" <%=sortJobs==="leastapplicants" ? "selected" : "" %>>
+                            Least Applicants
+                        </option>
+
+                    </select>
+
+                </form>
+
                 <% } %>
 
-                    <% if (jobs.length===0) { %>
-                        <p>No jobs created yet</p>
-                        <% } else { %>
-                            <div class="job-grid">
-                                <% jobs.forEach(function(job) { %>
-                                    <div class="job-card">
-                                        <h3>
-                                            <%= job.title %>
-                                        </h3>
+        </div>
 
-                                        <p><strong>Salary:</strong> ₹<%= job.salary %>
-                                        </p>
-                                        <p><strong>Location:</strong>
+        <% if(typeof message !=="undefined" ){ %>
+
+            <p class="message">
+                <%= message %>
+            </p>
+
+            <% } %>
+
+                <% if(jobs.length===0){ %>
+
+                    <div class="empty-state">
+                        <h3>No Jobs Created Yet</h3>
+                        <p>Start posting jobs and manage applicants easily.</p>
+
+                        <a href="/recruiter/create" class="create-btn">
+                            Create New Job
+                        </a>
+                    </div>
+
+                    <% } else { %>
+
+                        <div class="job-grid">
+
+                            <% jobs.forEach(function(job){ %>
+
+                                <div class="job-card">
+
+                                    <div class="job-header">
+
+                                        <div>
+                                            <h3>
+                                                <%= job.title %>
+                                            </h3>
+
+                                            <span class="badge">
+                                                <%= job.jobType %>
+                                            </span>
+                                        </div>
+
+                                        <div class="salary">
+                                            ₹<%= job.salary %>
+                                        </div>
+
+                                    </div>
+
+                                    <div class="job-info">
+
+                                        <p>
+                                            <strong>Location:</strong>
                                             <%= job.location %>
                                         </p>
-                                        <p><strong>Job Type:</strong>
-                                            <%= job.jobType %>
-                                        </p>
-                                        <p><strong>Experience:</strong>
+
+                                        <p>
+                                            <strong>Experience:</strong>
                                             <%= job.experienceLevel %> years
                                         </p>
 
-                                        <div class="card-buttons">
-                                            <a href="/recruiter/<%= job._id %>/update" class="btn">Update</a>
-                                            <a href="/recruiter/<%= job._id %>/delete" class="btn deleteBtn"
-                                                data-job-id="<%=job._id%>">Delete</a>
-                                            <a href="/recruiter/<%= job._id %>/applications" class="btn">
-                                                Check Applicants
-                                            </a>
-                                        </div>
-                                    </div>
-                                    <% }) %>
-                            </div>
-                            <% } %>
-        </div>
+                                        <p>
+                                            <strong>Applicants:</strong>
+                                            <%= job.totalApplications %>
+                                        </p>
 
-        <script src="/javascripts/deletePost.js"></script>
+                                    </div>
+
+                                    <div class="card-buttons">
+
+                                        <a href="/recruiter/<%= job._id %>/applications" class="btn applicants-btn">
+                                            Applicants
+                                        </a>
+
+                                        <a href="/recruiter/<%= job._id %>/update" class="btn update-btn">
+                                            Update
+                                        </a>
+
+                                        <a href="/recruiter/<%= job._id %>/delete"
+                                            class="btn delete-btn deleteBtn" data-job-id="<%=job._id%>">
+                                            Delete
+                                        </a>
+
+                                    </div>
+
+                                </div>
+
+                                <% }) %>
+
+                        </div>
+
+                        <% } %>
+
+    </div>
+
+    <script src="/javascripts/deletePost.js"></script>
+
 </body>
 
 </html>

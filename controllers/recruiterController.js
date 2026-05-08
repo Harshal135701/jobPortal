@@ -1,12 +1,14 @@
 const jobSchema = require('../models/job')
 const userSchema = require('../models/user')
 const applicationSchema = require('../models/application')
-const sendStatusEmail = require("../services/emailService")
+const sendStatusEmail = require("../services/emailService");
+const job = require('../models/job');
 
 async function JobPostCreation(req, res) {
     try {
-        const { title, description, company, location, salary, jobType, experienceLevel } = req.body;
+        const { title, description, company, location, salary, jobType, experienceLevel, category } = req.body;
         const recruiterId = req.user._id;
+
         if (!title || !description || !company || !location || !salary || !jobType || experienceLevel == undefined) {
 
             return res.status(400).render("jobCreation", {
@@ -21,8 +23,10 @@ async function JobPostCreation(req, res) {
             salary,
             jobType,
             experienceLevel,
+            category,
             createdBy: recruiterId
         })
+        console.log("JOB POST CREATED");
 
         return res.redirect('/recruiter/myjobs')
     }
@@ -36,14 +40,78 @@ async function JobPostCreation(req, res) {
 async function getAllJobs(req, res) {
     try {
         const userId = req.user._id;
-        const jobs = await jobSchema.find({ createdBy: userId });
+        const sortJobs = req.query.sortJobs;
+
+        let sortOptions = {};
+
+        if (sortJobs === "latest") {
+            sortOptions = { createdAt: -1 };
+        }
+
+        else if (sortJobs === "oldest") {
+            sortOptions = { createdAt: 1 };
+        }
+        else if (sortJobs === "highestpaying") {
+            sortOptions = { salary: -1 };
+        }
+        else if (sortJobs === "lowestpaying") {
+            sortOptions = { salary: 1 };
+        }
+        else if (sortJobs === "mostapplicants") {
+            sortOptions = { totalApplications: -1 };
+        }
+
+        else if (sortJobs === "leastapplicants") {
+            sortOptions = { totalApplications: 1 };
+        }
+
+        // const jobs = await jobSchema.find({ createdBy: userId });
+
+        const pipeline = [
+            {
+                $match: {
+                    createdBy: userId
+                }
+            },
+
+            {
+                $lookup: {
+                    from: "applications",
+                    localField: "_id",
+                    foreignField: "job",
+                    as: "applications"
+                }
+            },
+
+            {
+                $addFields: {
+                    totalApplications: {
+                        $size: "$applications"
+                    }
+                }
+            }
+        ];
+        // we sortOptions is null no sorting
+        if (Object.keys(sortOptions).length > 0) {
+            pipeline.push({
+                // above we stored which kind of sorting have to do 
+                // store it in variable sortOptions 
+                // and then do sorting here
+                $sort: sortOptions
+            });
+        }
+
+        const jobs = await jobSchema.aggregate(pipeline);
+
         if (jobs.length === 0) {
             return res.status(200).render("JobsCreatedByRecruiter", {
-                jobs: []
+                jobs: [],
+                sortJobs
             })
         }
         return res.status(200).render("JobsCreatedByRecruiter", {
-            jobs
+            jobs,
+            sortJobs
         })
     }
     catch (err) {
@@ -268,11 +336,40 @@ async function loggedInRec(req, res) {
             }
         ]);
 
+        const totalPendingJobs = jobs.reduce((count, job) => {
+            return count + job.applications.filter(app => app.status === "pending").length;
+        }, 0)
+
+        const totalShortlistedJobs = jobs.reduce((count, job) => {
+            return count + job.applications.filter(app => app.status == "shortlisted").length;
+        }, 0)
+
+        const totalAcceptedJobs = jobs.reduce((count, job) => {
+            return count + job.applications.filter(app => app.status == "accepted").length;
+        }, 0)
+
+        const totalRejectedJobs = jobs.reduce((count, job) => {
+            return count + job.applications.filter(app => app.status == "rejected").length;
+        }, 0)
+
+        // Here the jobs is array which contains the job and its total number of applicants 
+        // To add the all applicants from the jobs we used reduce 
+        // eg . backend -> 3 , frontend -> 5 , cloud -> 4
+        // sum -> 12 
         const totalNoofApplications = jobs.reduce((sum, job) => sum + job.applicationCount, 0);
+        // instead of reduce we can also use 
+        // let sum = 0;
+        // for(let job of jobs){
+        //    sum += job.applicationCount;
+        // }
 
         return res.status(200).render("recruiterHome", {
             jobs,
-            applicants: totalNoofApplications
+            applicants: totalNoofApplications,
+            pending: totalPendingJobs,
+            accepted: totalAcceptedJobs,
+            rejected: totalRejectedJobs,
+            shortlisted: totalShortlistedJobs
         })
     }
     catch (err) {

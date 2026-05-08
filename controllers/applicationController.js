@@ -44,7 +44,7 @@ async function applyForJobPostRoute(req, res) {
             });
         }
 
-        console.log(req.file);
+    
 
         const fileIs = "/resume/"+req.file.filename;
 
@@ -68,7 +68,7 @@ async function applyForJobPostRoute(req, res) {
         return res.redirect('/applications/my');
     }
     catch (err) {
-        console.log(err);
+       
         return res.status(500).render("JobPostFullPage", {
             message: err.message,
             job: jobIs
@@ -189,7 +189,6 @@ async function WithdrawalOfApplication(req, res) {
         });
     }
     catch (err) {
-        console.log("ERROR:", err);   // 🔥 ADD THIS
         return res.status(500).json({
             success: false,
             message: err.message      // 🔥 SHOW REAL ERROR
