@@ -147,11 +147,11 @@ async function UpdateProfile(req, res) {
 async function UpdateProfileThroughPatch(req, res) {
     try {
         const { fullname, occupation, experience } = req.body;
-        const updatedData = {
-            fullname,
-            occupation,
-            experience
-        };
+        const updatedData = {};
+
+        if (fullname) updatedData.fullname = fullname;
+        if (occupation) updatedData.occupation = occupation;
+        if (experience) updatedData.experience = experience;
 
         if (req.file) {
             updatedData.profilepic =
