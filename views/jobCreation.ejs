@@ -5,8 +5,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Job Post</title>
+
     <link rel="stylesheet" href="/stylesheets/navbar.css">
     <link rel="stylesheet" href="/stylesheets/createJob.css">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
@@ -14,38 +19,41 @@
     <%- include("partials/navbar") %>
 
         <div class="form-container">
-            <h2>Create a Job Post</h2>
+
+            <div class="form-header">
+                <h2>Create a Job Post</h2>
+                <p>Publish jobs faster with AI-powered descriptions.</p>
+            </div>
 
             <form action="/recruiter/create" method="POST">
-                <label>Title</label>
-                <input type="text" name="title" required>
 
-                <label>Description</label>
-                <textarea name="description" rows="4" required></textarea>
+                <label>Title</label>
+                <input type="text" name="title" id="title" required>
 
                 <label>Company</label>
-                <input type="text" name="company" required>
+                <input type="text" name="company" id="company" required>
 
                 <label>Location</label>
-                <input type="text" name="location" required>
+                <input type="text" name="location" id="location" required>
 
                 <label>Salary</label>
-                <input type="number" name="salary" required>
+                <input type="number" name="salary" id="salary" required>
 
                 <label>Experience Level (Years)</label>
-                <input type="number" name="experienceLevel" required>
+                <input type="number" name="experienceLevel" id="experienceLevel" required>
 
                 <label>Job Type</label>
-                <select name="jobType" required>
+                <select name="jobType" id="jobType" required>
                     <option value="">Select Job Type</option>
                     <option value="Full-time">Full-time</option>
                     <option value="Part-time">Part-time</option>
                     <option value="Internship">Internship</option>
                     <option value="Remote">Remote</option>
                 </select>
+
                 <label>Category</label>
 
-                <select name="category" required>
+                <select name="category" id="category" required>
                     <option value="">Select Category</option>
                     <option value="Frontend">Frontend</option>
                     <option value="Backend">Backend</option>
@@ -55,9 +63,25 @@
                     <option value="Data Science">Data Science</option>
                 </select>
 
-                <button type="submit">Create Job</button>
+                <div class="description-header">
+                    <label>Job Description</label>
+
+                    <button type="button" id="generateBtn">
+                        ✨ Generate AI Description
+                    </button>
+                </div>
+
+                <textarea name="description" rows="8" id="description"
+                    placeholder="AI-generated job description will appear here..." required></textarea>
+
+                <button type="submit" class="submit-btn">
+                    Create Job
+                </button>
+
             </form>
         </div>
+
+        <script src="/javascripts/jobCreationAiDescription.js"></script>
 
 </body>
 

@@ -35,9 +35,9 @@ const jobSchema = new mongoose.Schema({
         required: true
     },
     category: {
-    type: String,
-    required: true
-},
+        type: String,
+        required: true
+    },
 }, { timestamps: true })
 
 module.exports = mongoose.model("job", jobSchema)
