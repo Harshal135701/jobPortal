@@ -76,6 +76,7 @@ async function applyForJobPostRoute(req, res) {
         })
     }
 }
+
 async function getAllAppliedJobs(req, res) {
     try {
         const { status = "all", search = "", sort = "latest", page = 1 } = req.query;
