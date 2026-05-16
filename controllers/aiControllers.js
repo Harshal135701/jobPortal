@@ -51,16 +51,16 @@ async function aiJobDesciption(req, res) {
 async function GenerateMatchResume(req, res) {
     try {
         const applicationId = req.params.id;
-        console.log(applicationId);
+        // console.log(applicationId);
         const application = await applicationSchema.findById(applicationId).populate("applicant").populate("job");
-        console.log(typeof applicationId);
+        // console.log(typeof applicationId);
 
         if (!application) {
             return res.status(404).json({
                 error: "Application not found"
             });
         }
-
+        console.log(__dirname)
         // resume path
         const resumePath = path.join(
             __dirname,
@@ -76,7 +76,7 @@ async function GenerateMatchResume(req, res) {
         const pdfData = await pdfParse(dataBuffer);
    
 
-        const resumeText = pdfData.text.slice(0, 1000);
+        const resumeText = pdfData.text.slice(0, 500);
 
         if (resumeText.trim().length < 50) {
             return res.status(400).json({
@@ -117,7 +117,7 @@ async function GenerateMatchResume(req, res) {
 
 
         const response = await ai.models.generateContent({
-            model: "gemini-2.0-flash",
+            model: "gemini-2.5-flash",
             contents: prompt,
         });
 
@@ -142,9 +142,10 @@ async function GenerateMatchResume(req, res) {
 
     }
     catch (err) {
-
+        // console.log(err);
         return res.status(500).json({
-            error: "Failed to generate AI analysis",
+            // error: err.message,
+            err:"Something went wrong",
             match: null
         });
     }
