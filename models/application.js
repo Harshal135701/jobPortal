@@ -21,6 +21,14 @@ const applicationSchema = new mongoose.Schema({
     },
     resumeName:{
         type:String
+    },
+    matchPercentage:{
+        type:Number,
+        default:null
+    },
+    aiAnalysis:{
+        type:String,
+        default:""
     }
 }, { timestamps: true });
 // Making the job and applicant as a index to avoid there combination in db again more than 1 

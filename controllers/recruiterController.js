@@ -238,9 +238,11 @@ async function getAllCandidatesAppliedForJob(req, res) {
         }
         const applicants = await applicationSchema
             .find({ job: jobId })
-            .select("applicant status")
+            .select("applicant status matchPercentage")
             // Selct use to select only things we want to show on api
             .populate("applicant", "fullname email occupation experience ")
+            .sort({matchPercentage:-1});
+
         if (applicants.length == 0) {
             return res.status(200).render("getAllCandidate", {
                 applicants: [],
@@ -404,7 +406,7 @@ async function SeeCandidate(req, res) {
         return res.status(200).render("SeeCandidate", {
             success: true,
             applicationId,
-            user,
+            // user,
             userResume: IfApplied.resumeUrl,
             applicant: IfApplied
         })

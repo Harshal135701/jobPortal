@@ -106,12 +106,12 @@ async function loginUser(req, res) {
 async function profilePage(req, res) {
     try {
         return res.status(200).render("home", {
-            user: req.user
+        //    user
         })
     }
     catch (err) {
         return res.status(500).render("home", {
-            user: req.user,
+            // user: req.user,
             message: err.message
         })
     }

@@ -60,7 +60,21 @@ async function GenerateMatchResume(req, res) {
                 error: "Application not found"
             });
         }
-        console.log(__dirname)
+
+        if (application.matchPercentage && application.aiAnalysis) {
+            return res.status(200).json({
+                success: true,
+                // user: application.applicant,
+                applicant: application,
+                applicationId: application._id,
+                userResume: application.applicant.resumeUrl,
+                match: application.aiAnalysis,
+                matchPercentage: application.matchPercentage,
+                error: null
+            })
+        }
+
+        // console.log(__dirname)
         // resume path
         const resumePath = path.join(
             __dirname,
@@ -71,10 +85,10 @@ async function GenerateMatchResume(req, res) {
 
         // read pdf buffer
         const dataBuffer = fs.readFileSync(resumePath);
-   
+
         // extract text from pdf
         const pdfData = await pdfParse(dataBuffer);
-   
+
 
         const resumeText = pdfData.text.slice(0, 500);
 
@@ -124,10 +138,21 @@ async function GenerateMatchResume(req, res) {
         const matchResult =
             response.candidates[0].content.parts[0].text;
 
+        // regex to find out the digit 
+        const percentageMatch = matchResult.match(/\d+/);
+        const matchPercentage = percentageMatch
+            ? parseInt(percentageMatch[0])
+            : 0;
+
+        application.matchPercentage = matchPercentage;
+
+        application.aiAnalysis = matchResult;
+
+        await application.save();
 
         return res.status(200).json({
             success: true,
-            user: application.applicant,
+            // user: application.applicant,
 
             applicant: application,
 
@@ -136,7 +161,7 @@ async function GenerateMatchResume(req, res) {
             userResume: application.applicant.resumeUrl,
 
             match: matchResult,
-
+            matchPercentage: matchPercentage,
             error: null
         });
 
@@ -145,7 +170,8 @@ async function GenerateMatchResume(req, res) {
         // console.log(err);
         return res.status(500).json({
             // error: err.message,
-            err:"Something went wrong",
+            // err: "Something went wrong",
+            err:err.message,
             match: null
         });
     }

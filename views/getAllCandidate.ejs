@@ -43,6 +43,15 @@
                                             <%= applicant.status %>
                                         </p>
 
+                                        <p>
+                                            <strong>Match Percentage:</strong>
+
+                                            <% if(applicant.matchPercentage !==null) { %>
+                                                <%= applicant.matchPercentage %>%
+                                                    <% } else { %>
+                                                        Not Analyzed Yet
+                                                        <% } %>
+                                        </p>
                                         <a href="/recruiter/jobs/<%= job %>/applicants/<%= applicant.applicant._id %>">
                                             View Applicant
                                         </a>
@@ -51,7 +60,7 @@
                             </div>
                             <% } %>
         </div>
-       
+
 </body>
 
 </html>
