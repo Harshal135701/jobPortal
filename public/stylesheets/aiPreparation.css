@@ -1,0 +1,276 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+body {
+    background: linear-gradient(to bottom right, #f5f7fb, #eef2ff);
+    min-height: 100vh;
+}
+
+/* =========================
+   MAIN CONTAINER
+========================= */
+
+.ai-container {
+
+    width: 90%;
+    max-width: 950px;
+
+    margin: 60px auto;
+
+    background-color: white;
+
+    border-radius: 24px;
+
+    padding: 50px;
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.06),
+        0 20px 48px rgba(37, 99, 235, 0.08);
+
+    border: 1px solid #eef2ff;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.ai-header {
+    text-align: center;
+    margin-bottom: 40px;
+}
+
+.ai-header h1 {
+
+    font-size: 48px;
+
+    color: #111827;
+
+    margin-bottom: 15px;
+
+    font-weight: 700;
+
+    letter-spacing: -1px;
+}
+
+.ai-header p {
+
+    color: #6b7280;
+
+    font-size: 17px;
+
+    line-height: 1.7;
+
+    max-width: 700px;
+
+    margin: auto;
+}
+
+/* =========================
+   FORM
+========================= */
+
+.ai-form {
+
+    width: 100%;
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 16px;
+
+    margin-bottom: 30px;
+}
+
+/* =========================
+   INPUT
+========================= */
+
+.ai-form input {
+
+    flex: 1;
+
+    padding: 18px 22px;
+
+    border-radius: 16px;
+
+    border: 1px solid #d1d5db;
+
+    font-size: 16px;
+
+    outline: none;
+
+    background-color: #f9fafb;
+
+    transition: all 0.3s ease;
+}
+
+.ai-form input:focus {
+
+    border-color: #7c3aed;
+
+    background-color: white;
+
+    box-shadow: 0 0 0 5px rgba(124, 58, 237, 0.12);
+}
+
+.ai-form input::placeholder {
+    color: #9ca3af;
+}
+
+/* =========================
+   BUTTON
+========================= */
+
+.generate-btn {
+
+    padding: 18px 28px;
+
+    border: none;
+
+    border-radius: 16px;
+
+    background: linear-gradient(to right, #7c3aed, #2563eb);
+
+    color: white;
+
+    font-size: 15px;
+
+    font-weight: 600;
+
+    cursor: pointer;
+
+    transition: all 0.3s ease;
+
+    white-space: nowrap;
+}
+
+.generate-btn:hover {
+
+    transform: translateY(-2px);
+
+    box-shadow: 0 10px 20px rgba(124, 58, 237, 0.25);
+}
+
+/* =========================
+   LOADING TEXT
+========================= */
+
+.loading-text {
+
+    display: none;
+
+    margin-bottom: 20px;
+
+    text-align: center;
+
+    color: #7c3aed;
+
+    font-size: 15px;
+
+    font-weight: 600;
+}
+
+/* =========================
+   RESULT AREA
+========================= */
+
+.result-box {
+
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 22px;
+
+    margin-top: 25px;
+}
+
+/* =========================
+   QUESTION CARD
+========================= */
+
+.question-card {
+
+    background: #f9fafb;
+
+    border-left: 6px solid #7c3aed;
+
+    padding: 24px;
+
+    border-radius: 18px;
+
+    line-height: 1.8;
+
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+
+    transition: all 0.3s ease;
+}
+
+.question-card:hover {
+
+    transform: translateY(-3px);
+
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+}
+
+.question-card h3 {
+
+    color: #111827;
+
+    margin-bottom: 12px;
+
+    font-size: 20px;
+
+    font-weight: 700;
+}
+
+.question-card p {
+
+    color: #4b5563;
+
+    font-size: 15px;
+
+    line-height: 1.9;
+}
+
+/* =========================
+   RESPONSIVE DESIGN
+========================= */
+
+@media (max-width: 768px) {
+
+    .ai-container {
+
+        width: 95%;
+
+        padding: 30px 22px;
+    }
+
+    .ai-header h1 {
+        font-size: 34px;
+    }
+
+    .ai-header p {
+        font-size: 15px;
+    }
+
+    .ai-form {
+
+        flex-direction: column;
+    }
+
+    .generate-btn {
+
+        width: 100%;
+    }
+
+    .ai-form input {
+
+        width: 100%;
+    }
+}

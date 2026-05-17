@@ -14,12 +14,39 @@
                     <a href="/jobs/alljobs">Jobs</a>
                     <a href="/applications/my">Applications</a>
                     <a href="/jobs/saved">Saved Jobs</a>
+                    <div class="ai-menu">
+
+                        <button class="ai-btn">
+                            AI Mode ▼
+                        </button>
+
+                        <div class="ai-dropdown">
+                            <a href="/ai/preparation">
+                                Interview Preparation
+                            </a>
+
+                            <a href="/ai/mockInterview">
+                                Mock Interview
+                            </a>
+                        </div>
+
+                    </div>
                     <% } %>
         </div>
 
         <div class="user-section">
-            <a href="/logout" class="logout-link">Logout</a>
-            <img src="<%= user.profilepic %>" alt="Profile" class="profile-pic">
+
+            <img src="<%= user.profilepic %>" alt="Profile" class="profile-pic" onclick="toggleMenu()">
+
+            <div class="dropdown-menu" id="dropdownMenu">
+                <a href="/logout">Logout</a>
+                <a href="/profile">Edit Profile</a>
+            </div>
+
         </div>
+
     </div>
 </nav>
+
+<script src="/javascripts/navbar.js"></script>
+<script src="/javascripts/navbar2.js"></script>

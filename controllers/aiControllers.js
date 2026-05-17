@@ -171,10 +171,177 @@ async function GenerateMatchResume(req, res) {
         return res.status(500).json({
             // error: err.message,
             // err: "Something went wrong",
-            err:err.message,
+            err: err.message,
             match: null
         });
     }
 }
 
-module.exports = { aiJobDesciption, GenerateMatchResume }
+async function aiPreparation(req, res) {
+    try {
+        return res.render("aiPreparation");
+    }
+    catch (err) {
+        console.log(err);
+        return res.redirect("/home");
+    }
+}
+
+async function aiPreparationPostResponse(req, res) {
+    try {
+        const prompt = req.body.prompt;
+
+        const finalPrompt = `
+            Generate only 7-8 interview questions and answers for:
+
+            ${prompt}
+
+            Rules:
+            - Keep answers simple and beginner friendly
+            - Maximum 3-4 lines per answer
+            - Avoid long explanations
+            - Avoid markdown
+            - Avoid headings
+            - Focus on interview revision
+            - Strictly format response like:
+            Q1:
+            Answer:
+
+            Q2:
+            Answer:
+
+            Do not generate long paragraphs.
+            `;
+
+
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: finalPrompt,
+        });
+
+        const text = response.text;
+
+        return res.json({
+            success: true,
+            data: text
+        });
+    }
+    catch (err) {
+        console.log(err);
+        return res.status(500).json({
+            success: false,
+            message: "Something went wrong"
+        });
+    }
+}
+
+async function aiMockInterview(req, res) {
+    try {
+        return res.render("aiMockInterview")
+    }
+    catch (err) {
+        console.log(err);
+        return res.redirect("/home")
+    }
+}
+
+async function aiMockInterviewPostReq(req, res) {
+    try {
+        const { role, company, experience, difficulty } = req.body;
+
+        const finalPrompt = `
+            You are an interviewer at ${company}.
+
+            Generate ONE ${difficulty} level interview question
+            for a ${role} role.
+
+            Candidate experience level: ${experience}
+
+            Rules:
+            - Ask only one question
+            - Do not provide answer
+            - Keep question realistic
+            - Keep question concise
+            `;
+
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: finalPrompt,
+        });
+
+        const text = response.text;
+
+        return res.json({
+            success: true,
+            question: text
+        })
+    }
+    catch (err) {
+        return res.json({
+            success: false,
+            message: "Some issue"
+        })
+    }
+}
+
+async function aiMockInterviewPostEvaluateAnswer(req, res) {
+    try {
+
+        const { question, answer } = req.body;
+
+        const finalPrompt = `
+
+        Interview Question:
+        ${question}
+
+        Candidate Answer:
+        ${answer}
+
+        Evaluate the candidate answer.
+
+        Rules:
+        - Keep response concise
+        - Beginner friendly
+        - Give score out of 10
+        - Mention strengths
+        - Mention improvements
+        - Give short ideal answer
+
+        Format:
+
+        Score:
+        Strengths:
+        Improvements:
+        Ideal Answer:
+
+        Give entire answer in max 6-7 lines 
+        `;
+
+        const response = await ai.models.generateContent({
+            model: "gemini-2.5-flash",
+            contents: finalPrompt,
+        });
+
+        const text = response.text;
+
+
+        return res.json({
+            success: true,
+           feedback: text
+        });
+
+    }
+    catch (err) {
+
+        console.log(err);
+
+        return res.json({
+            success: false,
+            message: "Something went wrong"
+        });
+
+    }
+}
+
+
+module.exports = { aiJobDesciption, GenerateMatchResume, aiPreparation, aiPreparationPostResponse, aiMockInterview, aiMockInterviewPostReq, aiMockInterviewPostEvaluateAnswer }

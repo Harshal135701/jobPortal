@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>AI Mock Interview</title>
+
+    <link rel="stylesheet" href="/stylesheets/navbar.css">
+
+    <link rel="stylesheet" href="/stylesheets/mockInterview.css">
+
+</head>
+
+<body>
+
+    <%- include("partials/navbar") %>
+
+    <div class="mock-wrapper">
+
+        <!-- LEFT SECTION -->
+
+        <div class="left-card">
+
+            <div class="mock-header">
+
+                <h1>AI Mock Interview</h1>
+
+                <p>
+                    Practice role-based interview questions
+                    and get AI-powered feedback instantly.
+                </p>
+
+            </div>
+
+            <form id="candidatePrompt" class="mock-form">
+
+                <div class="input-group">
+
+                    <label>Enter Role</label>
+
+                    <input
+                        type="text"
+                        placeholder="Example: Backend Developer"
+                        id="inputRole"
+                        name="role"
+                        autocomplete="off"
+                    >
+
+                </div>
+
+                <div class="input-group">
+
+                    <label>Enter Company</label>
+
+                    <input
+                        type="text"
+                        placeholder="Example: Google"
+                        id="inputCompany"
+                        name="company"
+                        autocomplete="off"
+                    >
+
+                </div>
+
+                <div class="input-group">
+
+                    <label>Choose Experience Level</label>
+
+                    <select id="experience" name="experience">
+
+                        <option value="Fresher">Fresher</option>
+
+                        <option value="Intermediate">
+                            3-5 Years
+                        </option>
+
+                        <option value="Experienced">
+                            Experienced
+                        </option>
+
+                    </select>
+
+                </div>
+
+                <div class="input-group">
+
+                    <label>Choose Difficulty</label>
+
+                    <select id="difficulty" name="difficulty">
+
+                        <option value="Easy">Easy</option>
+
+                        <option value="Medium">Medium</option>
+
+                        <option value="Hard">Hard</option>
+
+                    </select>
+
+                </div>
+
+                <button type="submit" class="start-btn">
+
+                    Start Interview
+
+                </button>
+
+            </form>
+
+        </div>
+
+        <!-- MIDDLE SECTION -->
+
+        <div class="middle-card">
+
+            <div id="questionBox"></div>
+
+            <div id="answerSection">
+
+                <textarea
+                    id="candidateAnswer"
+                    placeholder="Write your answer here..."
+                ></textarea>
+
+                <button id="submitAnswerBtn">
+
+                    Submit Answer
+
+                </button>
+
+            </div>
+
+        </div>
+
+        <!-- RIGHT SECTION -->
+
+        <div class="right-card">
+
+            <div id="feedbackBox"></div>
+
+        </div>
+
+    </div>
+
+    <script src="/javascripts/aiMockInterview.js"></script>
+
+</body>
+
+</html>

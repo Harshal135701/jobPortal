@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Interview Preparation</title>
+
+    <link rel="stylesheet" href="/stylesheets/navbar.css">
+    <link rel="stylesheet" href="/stylesheets/aiPreparation.css">
+</head>
+
+<body>
+
+    <%- include("partials/navbar") %>
+
+    <div class="ai-container">
+
+        <div class="ai-header">
+            <h1>AI Interview Preparation</h1>
+            <p>
+                Generate important interview questions and concise answers
+                for internships and placements.
+            </p>
+        </div>
+
+        <form id="candidatePrompt" class="ai-form">
+
+            <input
+                type="text"
+                placeholder="Example: Backend Developer Internship at FAANG"
+                id="inputPrompt"
+                autocomplete="off"
+            >
+
+            <button type="submit" class="generate-btn">
+                Generate Questions
+            </button>
+
+        </form>
+
+        <div id="loading" class="loading-text">
+            Generating interview questions...
+        </div>
+
+        <div id="result" class="result-box"></div>
+
+    </div>
+
+    <script src="/javascripts/aiPreparation.js"></script>
+
+</body>
+
+</html>
