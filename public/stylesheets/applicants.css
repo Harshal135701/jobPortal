@@ -1,58 +1,113 @@
 body {
     font-family: Arial, sans-serif;
-    background: #f8f8f8;
+    background: #f4f4f5;
+    margin: 0;
+    padding: 0;
 }
 
 .applicants-container {
     width: 90%;
-    margin: 30px auto;
+    max-width: 1300px;
+    margin: 40px auto;
 }
 
-h2 {
-    margin-bottom: 20px;
+.applicants-container h2 {
+    font-size: 2rem;
+    color: #18181b;
+    margin-bottom: 25px;
 }
 
 .applicant-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
-    gap: 20px;
+    gap: 24px;
 }
 
 .applicant-card {
     background: white;
-    padding: 20px;
-    border-radius: 14px;
-    box-shadow: 0 3px 12px rgba(0,0,0,0.08);
+    padding: 22px;
+    border-radius: 16px;
+    box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    transition: all 0.25s ease;
+    border: 1px solid #ececec;
+
+    min-height: 300px;
+}
+
+.applicant-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 20px rgba(0,0,0,0.08);
 }
 
 .applicant-card h3 {
     color: #6d28d9;
-    margin-bottom: 10px;
+    margin-bottom: 14px;
+    font-size: 1.3rem;
 }
 
 .applicant-card p {
-    margin: 8px 0;
+    margin: 10px 0;
+    color: #3f3f46;
+    line-height: 1.5;
+    word-break: break-word;
 }
 
-form {
-    margin-top: 15px;
-    display: flex;
-    gap: 10px;
-    align-items: center;
+.applicant-card strong {
+    color: #18181b;
 }
 
-select {
-    padding: 8px;
-    border-radius: 8px;
-    border: 1px solid #ddd;
-}
+.applicant-card a {
+    margin-top: auto;
 
-button {
-    padding: 8px 14px;
-    border: none;
-    border-radius: 8px;
+    text-decoration: none;
     background: #6d28d9;
     color: white;
-    cursor: pointer;
+
+    padding: 12px;
+    border-radius: 10px;
+
+    text-align: center;
     font-weight: 600;
+
+    transition: background 0.2s ease;
+}
+
+.applicant-card a:hover {
+    background: #5b21b6;
+}
+
+.message {
+    background: #ecfeff;
+    color: #155e75;
+    padding: 14px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+body>a {
+    display: inline-block;
+    margin: 20px 0 0 5%;
+    text-decoration: none;
+    color: #6d28d9;
+    font-weight: 600;
+}
+
+@media(max-width: 768px) {
+
+    .applicants-container {
+        width: 94%;
+    }
+
+    .applicant-card {
+        min-height: auto;
+    }
+
+    .applicants-container h2 {
+        font-size: 1.7rem;
+    }
 }

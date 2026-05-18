@@ -22,6 +22,11 @@ async function sendData(event) {
         const difficulty =
             document.getElementById("difficulty").value;
 
+        const button=document.querySelector(".start-btn")
+        button.disabled=true;
+        button.innerHTML="Generating questions.."
+        
+
         const request = await fetch("/ai/mockInterview", {
 
             method: "POST",
@@ -39,8 +44,13 @@ async function sendData(event) {
 
         });
 
-        const response = await request.json();
+        button.disabled=false;
+        button.innerHTML="Start Interview"
 
+        const response = await request.json();
+        if (!response.success) {
+            return document.getElementById("questionBox").innerText = response.message || "AI service temporarily unavailable";
+        }
         currentQuestion = response.question;
 
         document
@@ -91,6 +101,7 @@ async function submitAnswer() {
             .getElementById("submitAnswerBtn")
             .innerText = "Evaluating...";
 
+
         const request = await fetch(
             "/ai/evaluateAnswer",
             {
@@ -123,8 +134,8 @@ async function submitAnswer() {
 
                     <p>
                         ${response.feedback
-                            ? response.feedback.replace(/\n/g, "<br>")
-                            : "No feedback generated"}
+                ? response.feedback.replace(/\n/g, "<br>")
+                : "No feedback generated"}
                     </p>
 
                 </div>

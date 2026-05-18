@@ -1,4 +1,5 @@
 const applicationSchema = require('../models/application')
+const aiCacheModel = require("../models/aiCache")
 const jobSchema = require('../models/job')
 const userSchema = require('../models/user');
 const ai = require("../services/aiServices")
@@ -26,16 +27,23 @@ async function aiJobDesciption(req, res) {
 
         const prompt = `Generate a job description using 
         Job title:${title} , Job experience level :${experienceLevel} , Job Type:${jobType} ,Job salary:${salary} only 6-7 lines but precise`
+        try {
+            const response = await ai.models.generateContent({
+                model: "gemini-2.5-flash",
+                contents: prompt,
+            });
 
-        const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: prompt,
-        });
-
-        res.status(200).json({
-            success: true,
-            description: response.text,
-        });
+            res.status(200).json({
+                success: true,
+                description: response.text,
+            });
+        }
+        catch (err) {
+            res.status(200).json({
+                success: true,
+                description: "AI service temporarily unavailable. Please try again later.",
+            });
+        }
 
     }
     catch (err) {
@@ -61,6 +69,8 @@ async function GenerateMatchResume(req, res) {
             });
         }
 
+
+        // Uses cache here by checking ai already generated response or not 
         if (application.matchPercentage && application.aiAnalysis) {
             return res.status(200).json({
                 success: true,
@@ -128,42 +138,51 @@ async function GenerateMatchResume(req, res) {
             Keep response very short and professional.
             `;
 
+        try {
 
+            const response = await ai.models.generateContent({
+                model: "gemini-2.5-flash",
+                contents: prompt,
+            });
 
-        const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: prompt,
-        });
+            const matchResult =
+                response.candidates[0].content.parts[0].text;
 
-        const matchResult =
-            response.candidates[0].content.parts[0].text;
+            // regex to find out the digit 
+            const percentageMatch = matchResult.match(/\d+/);
+            const matchPercentage = percentageMatch
+                ? parseInt(percentageMatch[0])
+                : 0;
 
-        // regex to find out the digit 
-        const percentageMatch = matchResult.match(/\d+/);
-        const matchPercentage = percentageMatch
-            ? parseInt(percentageMatch[0])
-            : 0;
+            application.matchPercentage = matchPercentage;
 
-        application.matchPercentage = matchPercentage;
+            application.aiAnalysis = matchResult;
 
-        application.aiAnalysis = matchResult;
+            await application.save();
 
-        await application.save();
+            return res.status(200).json({
+                success: true,
+                // user: application.applicant,
 
-        return res.status(200).json({
-            success: true,
-            // user: application.applicant,
+                applicant: application,
 
-            applicant: application,
+                applicationId: application._id,
 
-            applicationId: application._id,
+                userResume: application.applicant.resumeUrl,
 
-            userResume: application.applicant.resumeUrl,
-
-            match: matchResult,
-            matchPercentage: matchPercentage,
-            error: null
-        });
+                match: matchResult,
+                matchPercentage: matchPercentage,
+                error: null
+            });
+        }
+        catch (err) {
+            return res.status(500).json({
+                // error: err.message,
+                // err: "Something went wrong",
+                err: err.message,
+                match: null
+            });
+        }
 
     }
     catch (err) {
@@ -191,6 +210,16 @@ async function aiPreparationPostResponse(req, res) {
     try {
         const prompt = req.body.prompt;
 
+        const checkPrompt = prompt.trim().toLowerCase();
+        const promptExist = await aiCacheModel.findOne({ prompt: checkPrompt });
+
+        if (promptExist) {
+            return res.json({
+                success: true,
+                data: promptExist.response
+            });
+        }
+
         const finalPrompt = `
             Generate only 7-8 interview questions and answers for:
 
@@ -214,17 +243,34 @@ async function aiPreparationPostResponse(req, res) {
             `;
 
 
-        const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: finalPrompt,
-        });
+        try {
+            const response = await ai.models.generateContent({
+                model: "gemini-2.0-flash",
+                contents: finalPrompt,
+            });
 
-        const text = response.text;
+            const text = response.text;
 
-        return res.json({
-            success: true,
-            data: text
-        });
+            if (!text || !text.trim()) {
+                throw new Error("Invalid AI response");
+            }
+
+            await aiCacheModel.create({
+                prompt: checkPrompt,
+                response: text
+            })
+
+            return res.json({
+                success: true,
+                data: text
+            });
+        }
+        catch (err) {
+            return res.json({
+                success: false,
+                data: "AI service temporarily unavailable. Please try again later."
+            });
+        }
     }
     catch (err) {
         console.log(err);
@@ -263,18 +309,25 @@ async function aiMockInterviewPostReq(req, res) {
             - Keep question realistic
             - Keep question concise
             `;
+        try {
+            const response = await ai.models.generateContent({
+                model: "gemini-2.0-flash",
+                contents: finalPrompt,
+            });
 
-        const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: finalPrompt,
-        });
+            const text = response.text;
 
-        const text = response.text;
-
-        return res.json({
-            success: true,
-            question: text
-        })
+            return res.json({
+                success: true,
+                question: text
+            })
+        }
+        catch (err) {
+            return res.json({
+                success: false,
+                question: "AI service temporarily unavailable. Please try again later."
+            })
+        }
     }
     catch (err) {
         return res.json({
@@ -317,18 +370,27 @@ async function aiMockInterviewPostEvaluateAnswer(req, res) {
         Give entire answer in max 6-7 lines 
         `;
 
-        const response = await ai.models.generateContent({
-            model: "gemini-2.5-flash",
-            contents: finalPrompt,
-        });
+        try {
+            const response = await ai.models.generateContent({
+                model: "gemini-2.5-flash",
+                contents: finalPrompt,
+            });
 
-        const text = response.text;
+            const text = response.text;
 
 
-        return res.json({
-            success: true,
-           feedback: text
-        });
+            return res.json({
+                success: true,
+                feedback: text
+            });
+        }
+        catch (err) {
+            return res.json({
+                success: false,
+                feedback: "AI service temporarily unavailable. Please try again later "
+            });
+        }
+
 
     }
     catch (err) {

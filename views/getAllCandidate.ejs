@@ -15,14 +15,14 @@
         <div class="applicants-container">
             <h2>Applicants</h2>
 
-            <% if (typeof message !=="undefined" ) { %>
+            <!-- <% if (typeof message !=="undefined" ) { %>
                 <p class="message">
                     <%= message %>
                 </p>
-                <% } %>
+                <% } %> -->
 
                     <% if (applicants.length===0) { %>
-                        <p></p>
+                        <p class="message">No applicants found.</p>
                         <% } else { %>
                             <div class="applicant-grid">
                                 <% applicants.forEach(function(applicant) { %>
