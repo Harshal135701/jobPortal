@@ -208,6 +208,7 @@ async function aiPreparation(req, res) {
 
 async function aiPreparationPostResponse(req, res) {
     try {
+        console.log("sending request")
         const prompt = req.body.prompt;
 
         const checkPrompt = prompt.trim().toLowerCase();
@@ -245,7 +246,7 @@ async function aiPreparationPostResponse(req, res) {
 
         try {
             const response = await ai.models.generateContent({
-                model: "gemini-2.0-flash",
+                model: "gemini-2.5-flash",
                 contents: finalPrompt,
             });
 
@@ -311,7 +312,7 @@ async function aiMockInterviewPostReq(req, res) {
             `;
         try {
             const response = await ai.models.generateContent({
-                model: "gemini-2.0-flash",
+                model: "gemini-2.5-flash",
                 contents: finalPrompt,
             });
 
