@@ -44,9 +44,7 @@ async function applyForJobPostRoute(req, res) {
             });
         }
 
-    
-
-        const fileIs = "/resume/"+req.file.filename;
+      const fileIs = req.file.path;
 
         const alreadyApplied = await applicationSchema.findOne({
             job: jobid,

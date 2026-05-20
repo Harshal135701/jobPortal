@@ -23,10 +23,10 @@ async function registerUser(req, res) {
                 message: "The user already exist"
             })
         }
-
         let file = '/images/default.webp';
+
         if (req.file) {
-            file = '/uploads/' + req.file.filename;
+            file = req.file.path;
         }
 
         const hashedPass = await bcrypt.hash(password, saltRounds);
@@ -106,7 +106,7 @@ async function loginUser(req, res) {
 async function profilePage(req, res) {
     try {
         return res.status(200).render("home", {
-        //    user
+            //    user
         })
     }
     catch (err) {
@@ -155,7 +155,7 @@ async function UpdateProfileThroughPatch(req, res) {
 
         if (req.file) {
             updatedData.profilepic =
-                "/uploads/" + req.file.filename;
+                updatedData.profilepic = req.file.path;
         }
         await userSchemaDb.findByIdAndUpdate(req.user._id, updatedData, { new: true })
         return res.status(200).json({
