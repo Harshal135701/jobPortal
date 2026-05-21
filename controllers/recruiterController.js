@@ -241,7 +241,7 @@ async function getAllCandidatesAppliedForJob(req, res) {
             .select("applicant status matchPercentage")
             // Selct use to select only things we want to show on api
             .populate("applicant", "fullname email occupation experience ")
-            .sort({matchPercentage:-1});
+            .sort({ matchPercentage: -1 });
 
         if (applicants.length == 0) {
             return res.status(200).render("getAllCandidate", {
@@ -419,6 +419,29 @@ async function SeeCandidate(req, res) {
     }
 }
 
+async function ChatWithRecruiter(req, res) {
+    try {
+        const recruiterId = req.params.recruiterId;
+        const jobId = req.params.jobPostId;
+        const recruiter = await userSchema.findById(recruiterId);    
+        const job = await jobSchema.findById(jobId)
+        const userId=req.user._id;
+        const user=await userSchema.findById(userId);
+       
+        return res.status(200).render("ChatLog", {
+            recruiter,
+            job,
+            user
+        })
+    }
+    catch (err) {
+        return res.status(500).render("jobdetails", {
+            success: false,
+            message: err.message
+        })
+    }
+}
+
 
 
 module.exports = {
@@ -426,4 +449,5 @@ module.exports = {
     getAllCandidatesAppliedForJob,
     changeApplicationStatus,
     getAllJobs, getPageForJobCreation, updatePostGETpage, loggedInRec, SeeCandidate
+    , ChatWithRecruiter
 }

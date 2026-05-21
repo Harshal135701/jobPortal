@@ -1,5 +1,10 @@
+const { Server } = require('socket.io')
 const express = require('express')
 const app = express()
+const http=require("http")
+// The web socket is depend on http to create a connection and persist the connectin thats why we require it and then do create connection
+const server=http.createServer(app)
+const io = new Server(server)
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv')
 const path = require('path')
@@ -13,6 +18,7 @@ const aiRoutes=require("./routes/aiRoutes");
 
 
 const connectDb = require('./config/db')
+const { Socket } = require('socket.io-client')
 connectDb()
 
 const PORT = process.env.PORT;
@@ -26,12 +32,21 @@ app.use(express.json());
 app.use(cookieParser());
 
 
+
 app.use('/', authRoute)
 app.use('/jobs', jobRoute)
 app.use('/applications', applicationRoute)
 app.use('/recruiter', recruiterRoute)
 app.use('/ai',aiRoutes)
 
-app.listen(PORT, () => {
+io.on("connection",(socket)=>{
+    socket.on("send_message",(data)=>{
+        console.log(data);
+        // socket.broadcast.emit("received_message",data);
+        io.emit("received_message", data); // ✅ send to ALL (including sender)
+    })
+})
+
+server.listen(PORT, () => {
     console.log(`The app is listening on port${PORT}`)
 })

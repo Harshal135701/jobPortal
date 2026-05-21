@@ -111,11 +111,14 @@ async function showJobPost(req, res) {
     try {
         const jobId = req.params.id;
         const jobPost = await jobSchema.findById(jobId);
+        const recruiterId = jobPost.createdBy;
+        const recruiter = await userSchema.findById(recruiterId);
         if (!jobPost) {
             return res.redirect('/jobs/alljobs')
         }
         return res.status(200).render("jobdetails", {
-            jobpost: jobPost
+            jobpost: jobPost,
+            recruiter
         })
     }
     catch (err) {
@@ -180,11 +183,11 @@ async function RemoveBookmark(req, res) {
         const jobId = req.params.id;
         const userId = req.user._id;
 
-        await userSchema.findByIdAndUpdate(userId,{
-            $pull:{bookmark:jobId}
+        await userSchema.findByIdAndUpdate(userId, {
+            $pull: { bookmark: jobId }
         })
 
-         res.json({ success: true });
+        res.json({ success: true });
 
     }
     catch (err) {
@@ -193,4 +196,4 @@ async function RemoveBookmark(req, res) {
 }
 
 
-module.exports = { getAlljob, showJobPost, bookMarkedJobPost, getSavedJobs ,RemoveBookmark}
+module.exports = { getAlljob, showJobPost, bookMarkedJobPost, getSavedJobs, RemoveBookmark }

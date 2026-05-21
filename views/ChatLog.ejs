@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+</head>
+
+<body>
+
+    <form id="chatForm">
+        <p>
+            Chatting with :</p>
+        <h3>
+            <%=recruiter.fullname%>
+        </h3>
+
+        <p>
+            job title is :
+        <h5>
+            <%=job.title%>
+        </h5>
+        </p>
+        <div id="messages"></div>
+        <p>
+            <input type="text" id="messageSend">
+        </p>
+        <button type="submit">Send message</button>
+    </form>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        const form = document.getElementById("chatForm");
+        const InputMessage = document.getElementById("messageSend");
+        const messagesDiv = document.getElementById("messages");
+
+        // ✅ LISTENER SHOULD BE OUTSIDE
+        socket.on("received_message", (data) => {
+            console.log("new message", data);
+
+            const p = document.createElement("p");
+            p.innerText = `${data.sender}: ${data.message}`;
+
+            messagesDiv.appendChild(p);
+        });
+
+        form.addEventListener("submit", (e) => {
+            e.preventDefault();
+
+            const message = InputMessage.value;
+
+            socket.emit("send_message", {
+                sender: "<%= user.fullname %>",
+                receiver: "<%= recruiter.fullname %>",
+                jobId: "<%= job._id %>",
+                message: message
+            });
+
+            InputMessage.value = ""; // optional cleanup
+        });
+    </script>
+</body>
+
+</html>
