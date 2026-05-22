@@ -37,7 +37,6 @@
         const InputMessage = document.getElementById("messageSend");
         const messagesDiv = document.getElementById("messages");
 
-        // ✅ LISTENER SHOULD BE OUTSIDE
         socket.on("received_message", (data) => {
             console.log("new message", data);
 
@@ -59,7 +58,7 @@
                 message: message
             });
 
-            InputMessage.value = ""; // optional cleanup
+            InputMessage.value = ""; 
         });
     </script>
 </body>
