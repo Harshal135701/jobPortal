@@ -3,6 +3,7 @@ const userSchema = require('../models/user')
 const applicationSchema = require('../models/application')
 const sendStatusEmail = require("../services/emailService");
 const job = require('../models/job');
+const message = require("../models/messages")
 
 async function JobPostCreation(req, res) {
     try {
@@ -423,31 +424,93 @@ async function ChatWithRecruiter(req, res) {
     try {
         const recruiterId = req.params.recruiterId;
         const jobId = req.params.jobPostId;
-        const recruiter = await userSchema.findById(recruiterId);    
+        const recruiter = await userSchema.findById(recruiterId);
         const job = await jobSchema.findById(jobId)
-        const userId=req.user._id;
-        const user=await userSchema.findById(userId);
-       
+        const userId = req.user._id;
+        const user = await userSchema.findById(userId);
+
+        // const users = [user._id.toString(), recruiter._id.toString()].sort();
+        const users = [userId.toString(), recruiterId.toString()].sort();
+        const roomId = users[0] + "_" + users[1] + "_" + job._id;
+        const oldData = await message.find({ roomId }).populate("senderId").sort({ createdAt: 1 });
+
         return res.status(200).render("ChatLog", {
             recruiter,
             job,
-            user
+            user,
+            oldData
         })
     }
     catch (err) {
-        return res.status(500).render("jobdetails", {
+        console.log(err);
+        return res.status(500).render("ChatLog", {
             success: false,
             message: err.message
         })
     }
 }
 
+async function ChatWithCandidate(req, res) {
 
+    try {
+
+        const candidateId = req.params.candidateId;
+        const jobId = req.params.jobPostId;
+
+        // logged in recruiter
+        const userId = req.user._id;
+
+        // recruiter data
+        const user = await userSchema.findById(userId);
+
+        // candidate data
+        const recruiter = await userSchema.findById(candidateId);
+
+        // job data
+        const job = await jobSchema.findById(jobId);
+
+        // SAME ROOM FOR BOTH USERS
+        const users = [
+            userId.toString(),
+            candidateId.toString()
+        ].sort();
+
+        const roomId =
+            users[0] + "_" +
+            users[1] + "_" +
+            job._id;
+
+        // old chats
+        const oldData = await message
+            .find({ roomId })
+            .populate("senderId")
+            .sort({ createdAt: 1 });
+
+        return res.status(200).render("ChatLog", {
+            recruiter,
+            job,
+            user,
+            oldData
+        });
+
+    }
+
+    catch (err) {
+
+        console.log(err);
+
+        return res.status(500).render("ChatLog", {
+            success: false,
+            message: err.message
+        });
+
+    }
+}
 
 module.exports = {
     JobPostCreation, updatePost, deletePost,
     getAllCandidatesAppliedForJob,
     changeApplicationStatus,
     getAllJobs, getPageForJobCreation, updatePostGETpage, loggedInRec, SeeCandidate
-    , ChatWithRecruiter
+    , ChatWithRecruiter,ChatWithCandidate,
 }

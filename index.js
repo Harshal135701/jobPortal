@@ -1,10 +1,12 @@
 const { Server } = require('socket.io')
 const express = require('express')
 const app = express()
-const http=require("http")
+const http = require("http")
 // The web socket is depend on http to create a connection and persist the connectin thats why we require it and then do create connection
-const server=http.createServer(app)
+const server = http.createServer(app)
 const io = new Server(server)
+const socketHandler = require("./socket/socketHandler");
+socketHandler(io);
 const cookieParser = require('cookie-parser');
 const dotenv = require('dotenv')
 const path = require('path')
@@ -13,7 +15,7 @@ const authRoute = require('./routes/authRoute')
 const jobRoute = require('./routes/jobRoutes')
 const applicationRoute = require('./routes/applicationRoutes')
 const recruiterRoute = require('./routes/recruiterRoutes')
-const aiRoutes=require("./routes/aiRoutes");
+const aiRoutes = require("./routes/aiRoutes");
 
 
 const connectDb = require('./config/db')
@@ -36,15 +38,7 @@ app.use('/', authRoute)
 app.use('/jobs', jobRoute)
 app.use('/applications', applicationRoute)
 app.use('/recruiter', recruiterRoute)
-app.use('/ai',aiRoutes)
-
-io.on("connection",(socket)=>{
-    socket.on("send_message",(data)=>{
-        console.log(data);
-        // socket.broadcast.emit("received_message",data);
-        io.emit("received_message", data); // ✅ send to ALL (including sender)
-    })
-})
+app.use('/ai', aiRoutes)
 
 server.listen(PORT, () => {
     console.log(`The app is listening on port${PORT}`)

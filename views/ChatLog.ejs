@@ -4,63 +4,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chat</title>
+    <title>NextHire Chat</title>
+
+    <link rel="stylesheet" href="/stylesheets/chatlog.css">
 </head>
 
 <body>
 
-    <form id="chatForm">
-        <p>
-            Chatting with :</p>
-        <h3>
-            <%=recruiter.fullname%>
-        </h3>
+    <div class="chat-wrapper">
 
-        <p>
-            job title is :
-        <h5>
-            <%=job.title%>
-        </h5>
-        </p>
-        <div id="messages"></div>
-        <p>
-            <input type="text" id="messageSend">
-        </p>
-        <button type="submit">Send message</button>
-    </form>
+        <!-- BACK BUTTON -->
+        <% if(user.role==="candidate" ){ %>
+
+            <div class="top-bar">
+                <a href="/jobs/<%=job._id%>" class="back-btn">
+                    ← Back to Job
+                </a>
+            </div>
+
+            <% } else { %>
+
+                <div class="top-bar">
+                    <a href="/recruiter/<%= job._id %>/applications" class="back-btn">
+                        Back
+                    </a>
+                </div>
+
+                <% } %>
+
+
+
+
+                    <!-- CHAT CONTAINER -->
+
+                    <div class="chat-container">
+
+                        <!-- HEADER -->
+
+                        <div class="chat-header">
+
+                            <div class="header-left">
+
+                                <div class="profile-pic">
+                                    <img src="<%= recruiter.profilepic %>" alt="profile">
+                                </div>
+
+                                <div class="header-info">
+                                    <h2>
+                                        <%= recruiter.fullname %>
+                                    </h2>
+                                    <p>
+                                        <%= job.title %>
+                                    </p>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                        <!-- MESSAGES -->
+
+                        <div id="messages" class="messages-container">
+
+                            <% oldData.forEach((message)=> { %>
+
+                                <div class="message 
+                        <%= message.senderId._id.toString() === user._id.toString() ? 'sent' : 'received' %>">
+
+                                    <img class="message-avatar" src="<%= message.senderId.profilepic %>" alt="profile">
+
+                                    <div class="message-content">
+
+                                        <span class="sender-name">
+                                            <%= message.senderId.fullname %>
+                                        </span>
+
+                                        <p class="message-text">
+                                            <%= message.message %>
+                                        </p>
+
+                                        <small class="message-time">
+                                            <%= new Date(message.createdAt).toLocaleTimeString([], { hour: '2-digit' ,
+                                                minute: '2-digit' }) %>
+                                        </small>
+
+                                    </div>
+
+                                </div>
+
+                                <% }) %>
+
+                        </div>
+
+                        <!-- INPUT -->
+
+                        <form id="chatForm" class="chat-input-container">
+
+                            <input type="text" id="messageSend" placeholder="Type your message..." autocomplete="off">
+
+                            <button type="submit">
+                                Send
+                            </button>
+
+                        </form>
+
+                    </div>
+
+    </div>
 
     <script src="/socket.io/socket.io.js"></script>
+
     <script>
+
         const socket = io();
+
+        const users = ["<%= user._id %>", "<%= recruiter._id %>"].sort();
+
+        const roomId =
+            users[0] + "_" +
+            users[1] + "_" +
+            "<%= job._id %>";
 
         const form = document.getElementById("chatForm");
         const InputMessage = document.getElementById("messageSend");
         const messagesDiv = document.getElementById("messages");
 
+        socket.emit("join_room", roomId);
+
+        // AUTO SCROLL
+
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+
         socket.on("received_message", (data) => {
-            console.log("new message", data);
 
-            const p = document.createElement("p");
-            p.innerText = `${data.sender}: ${data.message}`;
+            const div = document.createElement("div");
 
-            messagesDiv.appendChild(p);
+            const isCurrentUser =
+                data.senderId._id === "<%= user._id %>";
+
+            div.classList.add(
+                "message",
+                isCurrentUser ? "sent" : "received"
+            );
+
+            const profilePic =
+                data.senderId.profilepic ||
+                "/images/default.webp";
+
+            const time = new Date(data.createdAt)
+                .toLocaleTimeString([], {
+                    hour: '2-digit',
+                    minute: '2-digit'
+                });
+
+            div.innerHTML = `
+            
+                <img class="message-avatar"
+                    src="${profilePic}"
+                    alt="profile">
+
+                <div class="message-content">
+
+                    <span class="sender-name">
+                        ${data.senderId.fullname}
+                    </span>
+
+                    <p class="message-text">
+                        ${data.message}
+                    </p>
+
+                    <small class="message-time">
+                        ${time}
+                    </small>
+
+                </div>
+            `;
+
+            messagesDiv.appendChild(div);
+
+            messagesDiv.scrollTop = messagesDiv.scrollHeight;
         });
 
         form.addEventListener("submit", (e) => {
+
             e.preventDefault();
 
-            const message = InputMessage.value;
+            const message = InputMessage.value.trim();
+
+            if (!message) return;
 
             socket.emit("send_message", {
-                sender: "<%= user.fullname %>",
-                receiver: "<%= recruiter.fullname %>",
+
+                senderId: "<%= user._id %>",
+                receiverId: "<%= recruiter._id %>",
+                message: message,
+                roomId: roomId,
                 jobId: "<%= job._id %>",
-                message: message
+
             });
 
-            InputMessage.value = ""; 
+            InputMessage.value = "";
         });
+
     </script>
+
 </body>
 
 </html>

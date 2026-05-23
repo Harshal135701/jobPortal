@@ -21,44 +21,48 @@
                 </p>
                 <% } %> -->
 
-                    <% if (applicants.length===0) { %>
-                        <p class="message">No applicants found.</p>
-                        <% } else { %>
-                            <div class="applicant-grid">
-                                <% applicants.forEach(function(applicant) { %>
-                                    <div class="applicant-card">
-                                        <h3>
-                                            <%= applicant.applicant.fullname %>
-                                        </h3>
-                                        <p><strong>Email:</strong>
-                                            <%= applicant.applicant.email %>
-                                        </p>
-                                        <p><strong>occupation:</strong>
-                                            <%= applicant.applicant.occupation %>
-                                        </p>
-                                        <p><strong>experience:</strong>
-                                            <%= applicant.applicant.experience %> Years
-                                        </p>
-                                        <p><strong>Status:</strong>
-                                            <%= applicant.status %>
-                                        </p>
+            <% if (applicants.length===0) { %>
+                <p class="message">No applicants found.</p>
+                <% } else { %>
+                    <div class="applicant-grid">
+                        <% applicants.forEach(function(applicant) { %>
+                            <div class="applicant-card">
+                                <h3>
+                                    <%= applicant.applicant.fullname %>
+                                </h3>
+                                <p><strong>Email:</strong>
+                                    <%= applicant.applicant.email %>
+                                </p>
+                                <p><strong>occupation:</strong>
+                                    <%= applicant.applicant.occupation %>
+                                </p>
+                                <p><strong>experience:</strong>
+                                    <%= applicant.applicant.experience %> Years
+                                </p>
+                                <p><strong>Status:</strong>
+                                    <%= applicant.status %>
+                                </p>
 
-                                        <p>
-                                            <strong>Match Percentage:</strong>
+                                <p>
+                                    <strong>Match Percentage:</strong>
 
-                                            <% if(applicant.matchPercentage !==null) { %>
-                                                <%= applicant.matchPercentage %>%
-                                                    <% } else { %>
-                                                        Not Analyzed Yet
-                                                        <% } %>
-                                        </p>
-                                        <a href="/recruiter/jobs/<%= job %>/applicants/<%= applicant.applicant._id %>">
-                                            View Applicant
-                                        </a>
-                                    </div>
-                                    <% }) %>
+                                    <% if(applicant.matchPercentage !==null) { %>
+                                        <%= applicant.matchPercentage %>%
+                                            <% } else { %>
+                                                Not Analyzed Yet
+                                                <% } %>
+                                </p>
+                                <a href="/recruiter/chat/candidate/<%= applicant.applicant._id %>/<%= job %>">
+                                    Message Candidate
+                                </a>
+                                <br>
+                                <a href="/recruiter/jobs/<%= job %>/applicants/<%= applicant.applicant._id %>">
+                                    View Applicant
+                                </a>
                             </div>
-                            <% } %>
+                            <% }) %>
+                    </div>
+                    <% } %>
         </div>
 
 </body>
