@@ -4,6 +4,7 @@ const applicationSchema = require('../models/application')
 const sendStatusEmail = require("../services/emailService");
 const job = require('../models/job');
 const message = require("../models/messages")
+const axios = require("axios");
 
 async function JobPostCreation(req, res) {
     try {
@@ -507,10 +508,33 @@ async function ChatWithCandidate(req, res) {
     }
 }
 
+
+async function downloadResume(req, res) {
+    try {
+        const url = req.query.url;
+
+        const response = await axios({
+            url,
+            method: "GET",
+            responseType: "stream"
+        });
+
+        res.setHeader(
+            "Content-Disposition",
+            "attachment; filename=resume.pdf"
+        );
+
+        response.data.pipe(res);
+
+    } catch (err) {
+        return res.status(500).send("Download failed");
+    }
+}
+
 module.exports = {
     JobPostCreation, updatePost, deletePost,
     getAllCandidatesAppliedForJob,
     changeApplicationStatus,
     getAllJobs, getPageForJobCreation, updatePostGETpage, loggedInRec, SeeCandidate
-    , ChatWithRecruiter,ChatWithCandidate,
+    , ChatWithRecruiter,ChatWithCandidate,downloadResume
 }

@@ -4,7 +4,7 @@ const transporter = require("../services/emailService")
 const { authMiddleware } = require('../middlewares/authMiddleware')
 const { recruiterOnly } = require('../middlewares/recruiterOnly')
 const { JobPostCreation, updatePost, deletePost, updatePostGETpage, ChatWithCandidate } = require('../controllers/recruiterController')
-const { getAllCandidatesAppliedForJob, changeApplicationStatus, getAllJobs, getPageForJobCreation, loggedInRec, SeeCandidate, ChatWithRecruiter } = require('../controllers/recruiterController')
+const { getAllCandidatesAppliedForJob, changeApplicationStatus, getAllJobs, getPageForJobCreation, loggedInRec, SeeCandidate, ChatWithRecruiter,downloadResume } = require('../controllers/recruiterController')
 
 router.post('/create', authMiddleware, recruiterOnly, JobPostCreation);
 router.get('/create', authMiddleware, recruiterOnly, getPageForJobCreation);
@@ -26,5 +26,6 @@ router.get(
 )
 
 router.get("/dashboard", authMiddleware, recruiterOnly, loggedInRec);
+router.get("/resume/download", downloadResume);
 
 module.exports = router;

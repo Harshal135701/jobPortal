@@ -43,8 +43,9 @@ async function applyForJobPostRoute(req, res) {
                 job: jobIs
             });
         }
+        console.log(req.file);
 
-      const fileIs = req.file.path;
+        const fileIs = "/resume/" + req.file.filename;
 
         const alreadyApplied = await applicationSchema.findOne({
             job: jobid,
@@ -66,7 +67,7 @@ async function applyForJobPostRoute(req, res) {
         return res.redirect('/applications/my');
     }
     catch (err) {
-       
+
         return res.status(500).render("JobPostFullPage", {
             message: err.message,
             job: jobIs

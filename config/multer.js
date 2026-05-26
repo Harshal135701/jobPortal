@@ -1,13 +1,14 @@
 const multer = require("multer");
-const { CloudinaryStorage } = require("multer-storage-cloudinary");
+const path = require("path");
 
-const cloudinary = require("./cloudinary");
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, "public/resume");
+    },
 
-const storage = new CloudinaryStorage({
-    cloudinary: cloudinary,
-    params: {
-        folder: "jobportal",
-        resource_type: "auto"
+    filename: function (req, file, cb) {
+        const uniqueName = Date.now() + path.extname(file.originalname);
+        cb(null, uniqueName);
     }
 });
 

@@ -17,29 +17,29 @@
 
     <%- include("partials/navbar") %>
 
-    <div class="candidate-container">
+        <div class="candidate-container">
 
-        <a href="/recruiter/<%= applicationId %>/applications" class="back-btn">
-            ← Back to Applications
-        </a>
+            <a href="/recruiter/<%= applicationId %>/applications" class="back-btn">
+                ← Back to Applications
+            </a>
 
-        <% if(typeof error !=="undefined" ) { %>
-            <p class="error-message">
-                <%= error %>
-            </p>
-            <% } %>
+            <% if(typeof error !=="undefined" ) { %>
+                <p class="error-message">
+                    <%= error %>
+                </p>
+                <% } %>
 
-                <div class="candidate-card">
+                    <div class="candidate-card">
 
-                    <div class="candidate-header">
+                        <div class="candidate-header">
 
-                        <div class="profile-section">
+                            <div class="profile-section">
 
-                            <!-- <div class="profile-avatar">
+                                <!-- <div class="profile-avatar">
                                 <%= user.fullname.charAt(0).toUpperCase() %>
                             </div> -->
 
-                            <!-- <div>
+                                <!-- <div>
                                 <h1>
                                     <%= user.fullname %>
                                 </h1>
@@ -49,82 +49,83 @@
                                 </span>
                             </div> -->
 
+                            </div>
+
                         </div>
+
+                        <div class="candidate-info">
+
+                            <div class="info-box">
+                                <div class="info-top">
+                                    <h3>Experience</h3>
+                                    <span>💼</span>
+                                </div>
+
+                                <p class="info-value">
+                                    <%= user.experience %> Years
+                                </p>
+                            </div>
+
+                            <div class="info-box">
+                                <div class="info-top">
+                                    <h3>Resume</h3>
+                                    <span>📄</span>
+                                </div>
+
+                                <a href="<%= userResume %>" download class="resume-btn">
+                                    Download Resume
+                                </a>
+                                
+                            </div>
+
+                            <div class="ai-box">
+
+                                <div class="info-top">
+                                    <h3>AI Resume Match</h3>
+                                    <span>🤖</span>
+                                </div>
+
+                                <button class="match-btn" data-application-id="<%= applicant._id %>">
+                                    Check Match Percentage
+                                </button>
+
+                            </div>
+
+                        </div>
+
+                        <div class="match-result"></div>
+
+                        <form class="updateStatusForm" data-applicant-id="<%= applicant._id %>">
+
+                            <div class="status-header">
+                                <h2>Update Application Status</h2>
+                                <p>Manage and track candidate progress</p>
+                            </div>
+
+                            <div class="status-group">
+
+                                <select name="status" class="status" required>
+                                    <option value="">Change Status</option>
+                                    <option value="pending">Pending</option>
+                                    <option value="accepted">Accepted</option>
+                                    <option value="rejected">Rejected</option>
+                                    <option value="shortlisted">Shortlisted</option>
+                                </select>
+
+                                <button type="submit" class="status-btn">
+                                    Update Status
+                                </button>
+
+                            </div>
+
+                        </form>
 
                     </div>
 
-                    <div class="candidate-info">
+        </div>
 
-                        <div class="info-box">
-                            <div class="info-top">
-                                <h3>Experience</h3>
-                                <span>💼</span>
-                            </div>
-
-                            <p class="info-value">
-                                <%= user.experience %> Years
-                            </p>
-                        </div>
-
-                        <div class="info-box">
-                            <div class="info-top">
-                                <h3>Resume</h3>
-                                <span>📄</span>
-                            </div>
-
-                            <a href="<%= userResume %>" target="_blank" class="resume-btn">
-                                View Resume
-                            </a>
-                        </div>
-
-                        <div class="ai-box">
-
-                            <div class="info-top">
-                                <h3>AI Resume Match</h3>
-                                <span>🤖</span>
-                            </div>
-
-                            <button class="match-btn" data-application-id="<%= applicant._id %>">
-                                Check Match Percentage
-                            </button>
-
-                        </div>
-
-                    </div>
-
-                    <div class="match-result"></div>
-
-                    <form class="updateStatusForm" data-applicant-id="<%= applicant._id %>">
-
-                        <div class="status-header">
-                            <h2>Update Application Status</h2>
-                            <p>Manage and track candidate progress</p>
-                        </div>
-
-                        <div class="status-group">
-
-                            <select name="status" class="status" required>
-                                <option value="">Change Status</option>
-                                <option value="pending">Pending</option>
-                                <option value="accepted">Accepted</option>
-                                <option value="rejected">Rejected</option>
-                                <option value="shortlisted">Shortlisted</option>
-                            </select>
-
-                            <button type="submit" class="status-btn">
-                                Update Status
-                            </button>
-
-                        </div>
-
-                    </form>
-
-                </div>
-
-    </div>
-
-    <script src="/javascripts/matchResume.js"></script>
-    <script src="/javascripts/updateStatus.js"></script>
+        <script src="/javascripts/matchResume.js"></script>
+        <script src="/javascripts/updateStatus.js"></script>
 
 </body>
 
