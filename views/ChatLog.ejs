@@ -12,7 +12,6 @@
 <body>
 
     <div class="chat-wrapper">
-
         <!-- BACK BUTTON -->
         <% if(user.role==="candidate" ){ %>
 
@@ -118,29 +117,53 @@
 
         const socket = io();
 
-        const users = ["<%= user._id %>", "<%= recruiter._id %>"].sort();
+
+        const users = [
+            "<%= user._id %>",
+            "<%= recruiter._id %>"
+        ].sort();
 
         const roomId =
             users[0] + "_" +
             users[1] + "_" +
             "<%= job._id %>";
 
-        const form = document.getElementById("chatForm");
-        const InputMessage = document.getElementById("messageSend");
-        const messagesDiv = document.getElementById("messages");
+        const form =
+            document.getElementById("chatForm");
+
+        const InputMessage =
+            document.getElementById("messageSend");
+
+        const messagesDiv =
+            document.getElementById("messages");
+       
+
+        // JOIN CHAT ROOM
 
         socket.emit("join_room", roomId);
 
+        // JOIN NOTIFICATION ROOM
+
+        socket.emit(
+            "join_notification_room",
+            "<%= user._id %>"
+        );
+
         // AUTO SCROLL
 
-        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+        messagesDiv.scrollTop =
+            messagesDiv.scrollHeight;
+
+        // RECEIVE CHAT MESSAGE
 
         socket.on("received_message", (data) => {
 
-            const div = document.createElement("div");
+            const div =
+                document.createElement("div");
 
             const isCurrentUser =
-                data.senderId._id === "<%= user._id %>";
+                data.senderId._id ===
+                "<%= user._id %>";
 
             div.classList.add(
                 "message",
@@ -158,38 +181,42 @@
                 });
 
             div.innerHTML = `
-            
-                <img class="message-avatar"
-                    src="${profilePic}"
-                    alt="profile">
 
-                <div class="message-content">
+            <img class="message-avatar"
+                src="${profilePic}"
+                alt="profile">
 
-                    <span class="sender-name">
-                        ${data.senderId.fullname}
-                    </span>
+            <div class="message-content">
 
-                    <p class="message-text">
-                        ${data.message}
-                    </p>
+                <span class="sender-name">
+                    ${data.senderId.fullname}
+                </span>
 
-                    <small class="message-time">
-                        ${time}
-                    </small>
+                <p class="message-text">
+                    ${data.message}
+                </p>
 
-                </div>
-            `;
+                <small class="message-time">
+                    ${time}
+                </small>
+
+            </div>
+        `;
 
             messagesDiv.appendChild(div);
 
-            messagesDiv.scrollTop = messagesDiv.scrollHeight;
+            messagesDiv.scrollTop =
+                messagesDiv.scrollHeight;
+
         });
+
 
         form.addEventListener("submit", (e) => {
 
             e.preventDefault();
 
-            const message = InputMessage.value.trim();
+            const message =
+                InputMessage.value.trim();
 
             if (!message) return;
 
@@ -204,7 +231,10 @@
             });
 
             InputMessage.value = "";
+
         });
+
+      
 
     </script>
 

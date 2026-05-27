@@ -1,4 +1,5 @@
 const message = require("../models/messages")
+const notificationService = require("../services/notificationService")
 
 module.exports = (io) => {
     io.on("connection", (socket) => {
@@ -6,7 +7,11 @@ module.exports = (io) => {
             socket.join(roomId);
         })
 
-        socket.on("send_message", async(data) => {
+        socket.on("join_notification_room", (userId) => {
+            socket.join(userId.toString())
+        })
+
+        socket.on("send_message", async (data) => {
             let newMessage = await message.create({
                 senderId: data.senderId,
                 receiverId: data.receiverId,
@@ -14,7 +19,17 @@ module.exports = (io) => {
                 roomId: data.roomId,
                 jobId: data.jobId
             })
-            newMessage=await newMessage.populate("senderId");
+            newMessage = await newMessage.populate("senderId");
+
+            await notificationService(io, {
+                senderId: data.senderId,
+                receiverId: data.receiverId,
+                type: "MESSAGE",
+                message: "You received a new message",
+                relatedId: newMessage._id,
+                jobId:data.jobId,
+            });
+
             io.to(data.roomId).emit("received_message", newMessage);
         })
     })

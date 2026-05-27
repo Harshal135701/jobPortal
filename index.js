@@ -16,6 +16,7 @@ const jobRoute = require('./routes/jobRoutes')
 const applicationRoute = require('./routes/applicationRoutes')
 const recruiterRoute = require('./routes/recruiterRoutes')
 const aiRoutes = require("./routes/aiRoutes");
+const notificationRoute=require("./routes/notificationRoutes")
 
 
 const connectDb = require('./config/db')
@@ -39,6 +40,7 @@ app.use('/jobs', jobRoute)
 app.use('/applications', applicationRoute)
 app.use('/recruiter', recruiterRoute)
 app.use('/ai', aiRoutes)
+app.use("/notification",notificationRoute)
 
 server.listen(PORT, () => {
     console.log(`The app is listening on port${PORT}`)

@@ -34,7 +34,30 @@
                     <% } %>
         </div>
 
+
         <div class="user-section">
+
+            <div class="notification-container">
+
+                <div id="notificationBell" class="notification-bell">
+                    🔔
+                    <span id="notificationCount">
+                        0
+                    </span>
+                </div>
+                <div id="notificationDropdown" class="notification-dropdown">
+
+                    <div class="notification-header">
+                        Notifications
+                    </div>
+
+                    <div id="notificationList">
+
+                    </div>
+
+                </div>
+
+            </div>
 
             <img src="<%= user.profilepic %>" alt="Profile" class="profile-pic" onclick="toggleMenu()">
 
@@ -47,6 +70,10 @@
 
     </div>
 </nav>
+<script>
+    window.currentUserId = "<%= user._id %>";
+</script>
 
+<script src="/socket.io/socket.io.js"></script>
 <script src="/javascripts/navbar.js"></script>
 <script src="/javascripts/navbar2.js"></script>
