@@ -281,10 +281,10 @@ npm start
 # 📸 Screenshots
 
 ![Login page](./asset/LoginPage.png)
-![Candidate Dashboard](./asset/CandidateDashboard.png)
-![AI Mock Interview Section](./asset/AiFeatureCandidate.png)
-![Recruiter Dashboard](./asset/RecruiterDashboard.png)
-![Resume Analyzer](./asset/MatchResume.png) 
+![Candidate Dashboard](./asset/candidateDash.png)
+![AI Mock Interview Section](./asset/aiMock.png)
+![Recruiter Dashboard](./asset/recDash.png)
+![Resume Analyzer](./asset/resumeAnalyzer.png) 
 
 ---
 
