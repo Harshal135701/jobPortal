@@ -8,11 +8,12 @@ body {
     font-family: Arial, sans-serif;
     background-color: #f8fafc;
     min-height: 100vh;
-    padding: 0;
 }
+
 .details-container {
     max-width: 900px;
-    margin: auto;
+    margin: 40px auto;
+    padding: 0 16px;
 }
 
 .back-link {
@@ -77,6 +78,32 @@ body {
     color: #374151;
 }
 
+/* Recruiter Section */
+.recruiter-box {
+    margin-top: 2rem;
+    padding: 1.2rem;
+    background-color: #fff7ed;
+    border-left: 4px solid #f97316;
+    border-radius: 10px;
+}
+
+.recruiter-box h3 {
+    margin-bottom: 0.8rem;
+    color: #9a3412;
+}
+
+.chat-link {
+    display: inline-block;
+    margin-top: 10px;
+    text-decoration: none;
+    color: #2563eb;
+    font-weight: 600;
+}
+
+.chat-link:hover {
+    text-decoration: underline;
+}
+
 .apply-btn {
     margin-top: 2rem;
     padding: 14px 28px;
@@ -93,13 +120,4 @@ body {
 .apply-btn:hover {
     transform: translateY(-2px);
     opacity: 0.95;
-}
-
-.message {
-    color: red;
-    margin-bottom: 1rem;
-}
-.details-container {
-    max-width: 900px;
-    margin: 40px auto;
 }
