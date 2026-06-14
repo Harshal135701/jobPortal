@@ -16,9 +16,23 @@
         <% if(user.role==="candidate" ){ %>
 
             <div class="top-bar">
-                <a href="/jobs/<%=job._id%>" class="back-btn">
-                    ← Back to Job
-                </a>
+                <% if(job){ %>
+
+                    <a href="/jobs/<%= job._id %>" class="back-btn">
+
+                        ← Back to Job
+
+                    </a>
+
+                    <% } else { %>
+
+                        <a href="javascript:history.back()" class="back-btn">
+
+                            ← Back
+
+                        </a>
+
+                        <% } %>
             </div>
 
             <% } else { %>
@@ -136,7 +150,7 @@
 
         const messagesDiv =
             document.getElementById("messages");
-       
+
 
         // JOIN CHAT ROOM
 
@@ -234,7 +248,7 @@
 
         });
 
-      
+
 
     </script>
 

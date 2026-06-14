@@ -30,6 +30,13 @@ const notificationSchema = new mongoose.Schema({
     jobId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: "job"
+    },
+    chatUserId: {
+
+        type: mongoose.Schema.Types.ObjectId,
+
+        ref: "user"
+
     }
 }, { timestamps: true })
 

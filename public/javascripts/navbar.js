@@ -19,140 +19,421 @@ const socket = io();
 
 /* ---------------- PROFILE DROPDOWN ---------------- */
 
-profilePic.addEventListener("click", function (event) {
+profilePic.addEventListener("click", (event) => {
+
     event.stopPropagation();
 
-    if (menu.style.display === "block") {
-        menu.style.display = "none";
-    } else {
-        menu.style.display = "block";
-    }
+    menu.style.display =
+        menu.style.display === "block"
+            ? "none"
+            : "block";
+
 });
 
 /* ---------------- NOTIFICATION DROPDOWN ---------------- */
 
 notificationBell.addEventListener("click", (event) => {
+
     event.stopPropagation();
 
-    if (notificationDropdown.style.display === "block") {
-        notificationDropdown.style.display = "none";
-    } else {
-        notificationDropdown.style.display = "block";
-    }
+    notificationDropdown.style.display =
+        notificationDropdown.style.display === "block"
+            ? "none"
+            : "block";
+
 });
 
-/* close everything on outside click */
+/* ---------------- CLOSE ON OUTSIDE CLICK ---------------- */
 
-document.addEventListener("click", function () {
+document.addEventListener("click", () => {
+
     menu.style.display = "none";
+
     notificationDropdown.style.display = "none";
+
 });
 
-/* prevent inside click close */
+/* ---------------- PREVENT INSIDE CLICK CLOSE ---------------- */
 
-menu.addEventListener("click", function (event) {
+menu.addEventListener("click", (event) => {
+
     event.stopPropagation();
+
 });
 
-notificationDropdown.addEventListener("click", function (event) {
+notificationDropdown.addEventListener("click", (event) => {
+
     event.stopPropagation();
+
 });
 
-/* ---------------- SOCKET SETUP ---------------- */
+/* ---------------- SOCKET ---------------- */
 
 socket.emit(
+
     "join_notification_room",
+
     window.currentUserId
+
 );
 
-/* ---------------- LOAD NOTIFICATIONS (DB) ---------------- */
+/* ---------------- LOAD NOTIFICATIONS ---------------- */
 
 async function loadNotifications() {
+
     try {
+
         const response = await fetch(
+
             `/notification/${window.currentUserId}`
+
         );
 
-        const notifications = await response.json();
+        const notifications =
+            await response.json();
 
-        notificationCount = notifications.length;
-        notificationCountElement.innerText = notificationCount;
+        notificationCount =
+            notifications.filter(
+
+                notification =>
+
+                    !notification.isRead
+
+            ).length;
+
+        notificationCountElement.innerText =
+            notificationCount;
 
         notificationList.innerHTML = "";
 
         if (notifications.length === 0) {
+
             notificationList.innerHTML = `
-                <div class="empty-notification">
-                    No notifications yet
-                </div>
+
+            <div class="empty-notification">
+
+                No notifications yet
+
+            </div>
+
             `;
+
             return;
+
         }
 
         notifications.forEach((notification) => {
 
-            const div = document.createElement("div");
+            const div =
+                document.createElement("div");
 
-            div.classList.add("notification-item");
+            div.classList.add(
+                "notification-item"
+            );
 
-            div.setAttribute("data-id", notification._id);
+            if (notification.isRead) {
 
-            const time = new Date(notification.createdAt)
-                .toLocaleString();
+                div.classList.add("read");
+
+            }
+
+            else {
+
+                div.classList.add("new");
+
+            }
+
+            div.dataset.id =
+                notification._id;
+
+            div.dataset.type =
+                notification.type;
+
+            div.dataset.relatedId =
+                notification.relatedId;
+
+            div.dataset.jobId =
+                notification.jobId;
+
+            div.dataset.chatUserId =
+                notification.chatUserId;
+
+            const time =
+                new Date(
+                    notification.createdAt
+                ).toLocaleString();
 
             div.innerHTML = `
-                <div class="notification-message">
-                    ${notification.message}
-                </div>
-                <div class="notification-time">
-                    ${time}
-                </div>
+
+            <div class="notification-message">
+
+                ${notification.message}
+
+            </div>
+
+            <div class="notification-time">
+
+                ${time}
+
+            </div>
+
             `;
 
             notificationList.appendChild(div);
+
         });
 
-    } catch (error) {
-        console.log(error);
     }
+
+    catch (err) {
+
+        console.log(err);
+
+    }
+
 }
 
 /* ---------------- REALTIME NOTIFICATION ---------------- */
 
 socket.on("new_notification", (data) => {
 
-    // prevent duplicates
     const existing = document.querySelector(
+
         `[data-id="${data._id}"]`
+
     );
 
     if (existing) return;
 
-    // update count safely
     notificationCount++;
-    notificationCountElement.innerText = notificationCount;
 
-    const div = document.createElement("div");
+    notificationCountElement.innerText =
+        notificationCount;
 
-    div.classList.add("notification-item", "new");
+    const div =
+        document.createElement("div");
 
-    div.setAttribute("data-id", data._id);
+    div.classList.add(
+        "notification-item",
+        "new"
+    );
 
-    const time = new Date(data.createdAt)
-        .toLocaleString();
+    div.dataset.id =
+        data._id;
+
+    div.dataset.type =
+        data.type;
+
+    div.dataset.relatedId =
+        data.relatedId;
+
+    div.dataset.jobId =
+        data.jobId;
+
+    div.dataset.chatUserId =
+        data.chatUserId;
+
+    const time =
+        new Date(
+            data.createdAt
+        ).toLocaleString();
 
     div.innerHTML = `
-        <div class="notification-message">
-            ${data.message}
-        </div>
-        <div class="notification-time">
-            ${time}
-        </div>
+
+    <div class="notification-message">
+
+        ${data.message}
+
+    </div>
+
+    <div class="notification-time">
+
+        ${time}
+
+    </div>
+
     `;
 
     notificationList.prepend(div);
 
 });
+
+/* ---------------- CLICK NOTIFICATION ---------------- */
+
+notificationList.addEventListener(
+
+    "click",
+
+    async (event) => {
+
+        const notificationItem =
+
+            event.target.closest(
+
+                ".notification-item"
+
+            );
+
+        if (!notificationItem) return;
+
+        const notificationId =
+
+            notificationItem.dataset.id;
+
+        try {
+
+            const response =
+
+                await fetch(
+
+                    `/notification/${notificationId}/read`,
+
+                    {
+
+                        method: "PATCH"
+
+                    }
+
+                );
+
+            const data =
+
+                await response.json();
+
+            if (data.success) {
+
+                notificationItem.classList.remove(
+
+                    "new"
+
+                );
+
+                notificationItem.classList.add(
+
+                    "read"
+
+                );
+
+                if (
+
+                    notificationCount > 0
+
+                ) {
+
+                    notificationCount--;
+
+                }
+
+                const type =
+
+                    notificationItem.dataset.type;
+
+                const jobId =
+
+                    notificationItem.dataset.jobId;
+
+                const chatUserId =
+
+                    notificationItem.dataset.chatUserId;
+
+                /* MESSAGE - opening the chat marks every
+                   notification from this same conversation
+                   as read on the server, so clear them all
+                   here too instead of just this one */
+
+                if (
+
+                    type === "MESSAGE"
+
+                ) {
+
+                    const sameChatItems =
+
+                        notificationList.querySelectorAll(
+
+                            `.notification-item.new[data-job-id="${jobId}"][data-chat-user-id="${chatUserId}"]`
+
+                        );
+
+                    sameChatItems.forEach((item) => {
+
+                        item.classList.remove("new");
+
+                        item.classList.add("read");
+
+                        if (notificationCount > 0) {
+
+                            notificationCount--;
+
+                        }
+
+                    });
+
+                }
+
+                notificationCountElement.innerText =
+
+                    notificationCount;
+
+                /* MESSAGE */
+
+                if (
+
+                    type === "MESSAGE"
+
+                ) {
+
+                    if (
+
+                        window.currentUserRole === "recruiter"
+
+                    ) {
+
+                        window.location.href =
+
+                            `/recruiter/chat/candidate/${chatUserId}/${jobId}`;
+
+                    }
+
+                    else {
+
+                        window.location.href =
+
+                            `/recruiter/chat/${jobId}/${chatUserId}`;
+
+                    }
+
+                }
+
+                /* APPLICATION */
+
+                else if (
+
+                    type ===
+
+                    "APPLICATION_UPDATE"
+
+                ) {
+
+                    window.location.href =
+
+                        "/applications/my";
+
+                }
+
+            }
+
+        }
+
+        catch (err) {
+
+            console.log(err);
+
+        }
+
+    }
+
+);
 
 /* ---------------- INIT ---------------- */
 

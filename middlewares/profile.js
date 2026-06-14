@@ -1,3 +1,3 @@
 const upload = require("../config/multer");
 
-module.exports = upload.single("profilepic");
+module.exports = upload.uploadProfilePic.single("profilepic");

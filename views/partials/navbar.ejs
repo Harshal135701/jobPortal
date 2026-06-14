@@ -59,11 +59,11 @@
 
             </div>
 
-            <img src="<%= user.profilepic %>" alt="Profile" class="profile-pic" onclick="toggleMenu()">
+            <img src="<%= user.profilepic %>" alt="Profile" class="profile-pic">
 
             <div class="dropdown-menu" id="dropdownMenu">
-                <a href="/logout">Logout</a>
                 <a href="/profile">Edit Profile</a>
+                <a href="/logout">Logout</a>
             </div>
 
         </div>
@@ -72,6 +72,7 @@
 </nav>
 <script>
     window.currentUserId = "<%= user._id %>";
+    window.currentUserRole = "<%= user.role %>";
 </script>
 
 <script src="/socket.io/socket.io.js"></script>

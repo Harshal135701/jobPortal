@@ -5,6 +5,7 @@ const sendStatusEmail = require("../services/emailService");
 const job = require('../models/job');
 const message = require("../models/messages")
 const axios = require("axios");
+const { markChatNotificationsAsRead } = require("./notificationController");
 
 async function JobPostCreation(req, res) {
     try {
@@ -28,7 +29,7 @@ async function JobPostCreation(req, res) {
             category,
             createdBy: recruiterId
         })
-        console.log("JOB POST CREATED");
+
 
         return res.redirect('/recruiter/myjobs')
     }
@@ -422,33 +423,109 @@ async function SeeCandidate(req, res) {
 }
 
 async function ChatWithRecruiter(req, res) {
+
     try {
         const recruiterId = req.params.recruiterId;
+
         const jobId = req.params.jobPostId;
-        const recruiter = await userSchema.findById(recruiterId);
-        const job = await jobSchema.findById(jobId)
+
+        const recruiter =
+            await userSchema.findById(recruiterId);
+
+        const job =
+            await jobSchema.findById(jobId);
+
+        if (!recruiter) {
+
+            return res.status(404).send(
+                "Recruiter not found"
+            );
+
+        }
+
+        if (!job) {
+
+            return res.status(404).send(
+                "Job not found"
+            );
+
+        }
+
         const userId = req.user._id;
-        const user = await userSchema.findById(userId);
 
-        // const users = [user._id.toString(), recruiter._id.toString()].sort();
-        const users = [userId.toString(), recruiterId.toString()].sort();
-        const roomId = users[0] + "_" + users[1] + "_" + job._id;
-        const oldData = await message.find({ roomId }).populate("senderId").sort({ createdAt: 1 });
+        const user =
+            await userSchema.findById(userId);
 
-        return res.status(200).render("ChatLog", {
-            recruiter,
-            job,
-            user,
-            oldData
-        })
+        // Clear all unread "MESSAGE" notifications for this chat
+        // (this recruiter + this job) now that the user is viewing it
+        await markChatNotificationsAsRead(
+            userId,
+            job._id,
+            recruiterId
+        );
+
+        const users = [
+
+            userId.toString(),
+
+            recruiterId.toString()
+
+        ].sort();
+
+        const roomId =
+
+            users[0] +
+
+            "_" +
+
+            users[1] +
+
+            "_" +
+
+            job._id;
+
+        const oldData =
+
+            await message
+
+                .find({ roomId })
+
+                .populate("senderId")
+
+                .sort({ createdAt: 1 });
+
+        return res.status(200).render(
+
+            "ChatLog",
+
+            {
+
+                recruiter,
+
+                job,
+
+                user,
+
+                oldData
+
+            }
+
+        );
+
     }
+
     catch (err) {
-        console.log(err);
-        return res.status(500).render("ChatLog", {
-            success: false,
-            message: err.message
-        })
+
+
+
+        return res.status(500).send(
+
+            err.message
+
+        );
+
     }
+
 }
 
 async function ChatWithCandidate(req, res) {
@@ -469,6 +546,14 @@ async function ChatWithCandidate(req, res) {
 
         // job data
         const job = await jobSchema.findById(jobId);
+
+        // Clear all unread "MESSAGE" notifications for this chat
+        // (this candidate + this job) now that the recruiter is viewing it
+        await markChatNotificationsAsRead(
+            userId,
+            job._id,
+            candidateId
+        );
 
         // SAME ROOM FOR BOTH USERS
         const users = [
@@ -498,7 +583,7 @@ async function ChatWithCandidate(req, res) {
 
     catch (err) {
 
-        console.log(err);
+
 
         return res.status(500).render("ChatLog", {
             success: false,
@@ -536,5 +621,5 @@ module.exports = {
     getAllCandidatesAppliedForJob,
     changeApplicationStatus,
     getAllJobs, getPageForJobCreation, updatePostGETpage, loggedInRec, SeeCandidate
-    , ChatWithRecruiter,ChatWithCandidate,downloadResume
+    , ChatWithRecruiter, ChatWithCandidate, downloadResume
 }

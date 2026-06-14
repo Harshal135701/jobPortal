@@ -23,11 +23,16 @@ module.exports = (io) => {
 
             await notificationService(io, {
                 senderId: data.senderId,
+
                 receiverId: data.receiverId,
+
                 type: "MESSAGE",
+
                 message: "You received a new message",
-                relatedId: newMessage._id,
-                jobId:data.jobId,
+
+                jobId: data.jobId,
+
+                chatUserId: data.senderId
             });
 
             io.to(data.roomId).emit("received_message", newMessage);
