@@ -12,12 +12,6 @@ async function registerUser(req, res) {
 
         const userExistOrNot = await userSchemaDb.findOne({ email })
 
-        // if (userExistOrNot) {
-        //     return res.status(400).json({
-        //         message: "The user already exist"
-        //     })
-        // }
-
         if (userExistOrNot) {
             return res.status(400).render("register", {
                 message: "The user already exist"

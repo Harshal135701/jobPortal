@@ -20,7 +20,7 @@ const socket = io();
 /* ---------------- PROFILE DROPDOWN ---------------- */
 
 profilePic.addEventListener("click", (event) => {
-
+// stoppropogation stops the bubbling phase
     event.stopPropagation();
 
     menu.style.display =

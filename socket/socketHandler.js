@@ -28,7 +28,7 @@ module.exports = (io) => {
 
                 type: "MESSAGE",
 
-                message: "You received a new message",
+                message: data.message,
 
                 jobId: data.jobId,
 

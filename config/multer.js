@@ -20,6 +20,7 @@ const upload = multer({ storage });
 // Cloudinary storage - used for profile pictures (candidate & recruiter)
 // Uploads the image directly to Cloudinary and returns a permanent
 // https://res.cloudinary.com/... URL in req.file.path
+
 const profilePicStorage = new CloudinaryStorage({
     cloudinary: cloudinary,
     params: {
